@@ -44,16 +44,12 @@ export const RealTimeStackScreen = () => {
     date.setSeconds(date.getSeconds()-10);
     date= date.toISOString();
     var start_time= date.substring(0,4)+date.substring(5,7)+date.substring(8,10)+date.substring(11,13)+date.substring(14,16)+date.substring(17,19);
-    //console.log(start_time);
-    //var end_time= new Date();
     var d = new Date();
     var v = new Date();
     v.setMinutes(d.getMinutes()+30);
     v=v.toISOString();
-    //console.log(v);
     var end_time= v.substring(0,4)+v.substring(5,7)+v.substring(8,10)+v.substring(11,13)+v.substring(14,16)+v.substring(17,19);
-    //var end_time = start_time
-    //console.log(end_time);
+
       try {
         fetch('http://mqtt.brilcom.com:8080/mqtt/GetAirQuality', {
           method: 'POST',
@@ -72,26 +68,15 @@ export const RealTimeStackScreen = () => {
           .then((response) => response.json())
           .then((res) => {
 
-
-             console.log("res of realstack is ----00"+JSON.stringify(res));
-            // console.log("length of res is "+res.data.length);
-            // console.log("serial number is "+devices[idx].SerialNum);
             if (res.data.length>0) {
-            //console.log(res.data.get("Co2"));
-            //console.log("000000000000000000"+res.data[0].Co2);
-            co2[idx]= res.data[0].Co2;
-            //console.log("index of idx is-------------------------------"+idx);
-            humid[idx]= res.data[0].Humid;
-            pm10[idx]= res.data[0].Pm10;
-            pm25[idx]= res.data[0].Pm25;
-            temperature[idx]= res.data[0].Temperature;
-            tvoc[idx]= res.data[0].Tvoc;
-            //console.log("co2 is "+ co2);
-            //snapshotToArray(null, idx);
-           }
-           
-
-         });
+              co2[idx]= res.data[0].Co2;
+              humid[idx]= res.data[0].Humid;
+              pm10[idx]= res.data[0].Pm10;
+              pm25[idx]= res.data[0].Pm25;
+              temperature[idx]= res.data[0].Temperature;
+              tvoc[idx]= res.data[0].Tvoc;
+            }
+          });
       } catch (exception) {
         console.log('ERROR :: ', exception);
       }
@@ -111,8 +96,6 @@ export const RealTimeStackScreen = () => {
       .ref(uri)
       .once('value')
       .then((snapshot) => {
-        //console.log(snapshot);
-        //console.log(idx);
         snapshotToArray(snapshot, idx);
       });
       
@@ -144,10 +127,8 @@ export const RealTimeStackScreen = () => {
 
 
   function snapshotToArray(snapshot, idx) {
-    //console.log("In snapshot function");
     //let item = snapshot.val();
     let item = {"value": "10050100050100f403017c0101a901000401"};
-    //item = {"value": "0"+co2+"00050100f403017c0101a901000401"};
     let s = '000000000000000000000000000000000000';
     // 데이터 오브젝트를 불러오지 못했으면 s를 0으로 나열한 값으로 대체
     // 하지만 이건 이제 옜날 방법이다.
@@ -260,18 +241,12 @@ export const RealTimeStackScreen = () => {
             a.SerialNum = devices[i].SerialNum;
 
             let stateInfo = new Object();
-            // stateInfo.pm25 = makeStat(airInfoState[i].substring(0, 6));
-            // stateInfo.pm10 = makeStat(airInfoState[i].substring(6, 12));
-            // stateInfo.temp = makeStat(airInfoState[i].substring(12, 18));
-            // stateInfo.humd = makeStat(airInfoState[i].substring(18, 24));
-            // stateInfo.co2 =  parseInt(co2)/10;//makeStat(airInfoState[i].substring(24, 30));
-            // stateInfo.vocs = makeStat(airInfoState[i].substring(30, 36));
-            stateInfo.pm25 = parseInt(pm25[i]); //makeStat(airInfoState[i].substring(0, 6));
-            stateInfo.pm10 = parseInt(pm10[i]);//makeStat(airInfoState[i].substring(6, 12));
-            stateInfo.temp = parseInt(temperature[i]);//makeStat(airInfoState[i].substring(12, 18));
-            stateInfo.humd = parseInt(humid[i]);//makeStat(airInfoState[i].substring(18, 24));
-            stateInfo.co2 =  parseInt(co2[i]);//makeStat(airInfoState[i].substring(24, 30));
-            stateInfo.vocs = parseInt(tvoc[i]);//makeStat(airInfoState[i].substring(30, 36));
+            stateInfo.pm25 = parseInt(pm25[i]);
+            stateInfo.pm10 = parseInt(pm10[i]);
+            stateInfo.temp = parseInt(temperature[i]);
+            stateInfo.humd = parseInt(humid[i]);
+            stateInfo.co2 =  parseInt(co2[i]);
+            stateInfo.vocs = parseInt(tvoc[i]);
             a.stateInfo = stateInfo;
 
             deviceAirInfo.push(a);

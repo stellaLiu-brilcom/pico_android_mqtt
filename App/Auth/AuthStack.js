@@ -41,10 +41,10 @@ export const AuthStackScreen = ({ navigation }) => {
           if (post.Msg === 'success' || post.Msg === 'User id is aleady existed.') {
             navigation.navigate('CreateAccount');
           } else {
-            //===console.log(post.Msg);
+            //console.log(post.Msg);
           }
         } catch (err) {
-          //===console.error(err);
+          //console.error(err);
         }
       },
     };

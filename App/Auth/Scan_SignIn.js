@@ -32,13 +32,8 @@ export const Scan_SignIn = ({ navigation }) => {
   // 1초 마다 블루투스 연결된 PiCO로 부터 데이터를 읽어오기 위해 호출
   function tick() {
     update();
-    //console.log(data);
   }
-  /*
-  function getlength(number) {
-    return number.toString().length;
-}
-*/
+
 
   function update() {
     PicoDevice.reload();
@@ -48,33 +43,7 @@ export const Scan_SignIn = ({ navigation }) => {
     setHumd(PicoDevice.data != null ? PicoDevice.data.humd.value : 0);
     setVOCs(PicoDevice.data != null ? PicoDevice.data.vocs.value : 0);
     setCO2(PicoDevice.data != null ? PicoDevice.data.co2.value : 0);
-   // console.log(PicoDevice.data);
-    /*
 
-    let ScannedData;
-
-    try{
-      
-
-
-      getlenth(PicoDevice.data.pm25.value);
-
-    ScannedData= String(PicoDevice.data.pm25.value)+
-                     String(PicoDevice.data.pm10.value)+
-                     String(PicoDevice.data.temp.value)+
-                     String(PicoDevice.data.humd.value)+
-                     String(PicoDevice.data.vocs.value)+
-                     String(PicoDevice.data.co2.value);
-    }catch(exeption){
-
-      console.log(exception);
-
-
-    }
-    
-    console.log(ScannedData);
-    */
- 
     
     if (count > 5) {
       setIsLoading(true);

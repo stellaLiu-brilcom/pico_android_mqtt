@@ -18,15 +18,13 @@ export const CreateAccount = ({ navigation }) => {
 
   const checkEmailConfirmed = (Info) => {
     if (Info.EmailConfirmed === '0') {
-      //==console.log('Please check your E-mail confirmed.');
       setCheckEmailModal(true);
     } else if (Info.EmailConfirmed === '1') {
-     //===== console.log('Email confirmed');
       setNextStepLoading(false);
       updateProfile(Info);
       setSignUpComplete(true);
     } else {
-      //====console.log('Something went wrong...');
+
     }
   };
 
@@ -54,7 +52,6 @@ export const CreateAccount = ({ navigation }) => {
     })
       .then((res) => res.json())
       .then((res) => {
-        // console.log(res.Info);
         checkEmailConfirmed(res.Info);
       })
       .catch((err) => console.error(err));
@@ -78,7 +75,6 @@ export const CreateAccount = ({ navigation }) => {
     })
       .then((res) => res.json())
       .then((res) => {
-        // console.log(res.Info);
         sendEmailVerification(res.Info.userid, res.Info.apiKey);
       })
       .catch((err) => console.error(err));
@@ -102,7 +98,6 @@ export const CreateAccount = ({ navigation }) => {
         if (res.Msg === 'success') {
           setSendSuccess(true);
         } else if (res.Msg === 'err_authorized_email') {
-          //===console.log(res.Msg);
           setAuthModal(true);
         }
       })
@@ -130,12 +125,12 @@ export const CreateAccount = ({ navigation }) => {
       });
       let post = await response.json();
       if (post.Msg === 'success') {
-        //===console.log('SignUp complete!');
+        //console.log('SignUp complete!');
       } else {
-        //===console.log(post.Msg);
+        //console.log(post.Msg);
       }
     } catch (err) {
-      //====console.error(err);
+      //console.error(err);
     }
   };
 

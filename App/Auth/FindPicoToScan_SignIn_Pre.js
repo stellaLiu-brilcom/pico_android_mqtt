@@ -63,63 +63,27 @@ export default class FindPicoToScan_SignIn_Pre extends Component {
       preventBackClick: false, // true => To prevent the location services popup from closing when it is clicked back button
       providerListener: false // true ==> Trigger locationProviderStatusChange listener when the location state changes
   }).then((success) => {
-  
-    //setIsScanning(true);
-
     this.setState({isLocation: 1});
-    //console.log(this.state.isScanning);
-     //=================console.log(success); // success => {alreadyEnabled: false, enabled: true, status: "enabled"}
-
   }).catch((error) => {
-      //================console.log(error.message); // error.message => "disabled"
+      //console.log(error.message);
   });
   
   DeviceEventEmitter.addListener('locationProviderStatusChange', function(status) { // only trigger when "providerListener" is enabled
-     // console.log(status); //  status => {enabled: false, status: "disabled"} or {enabled: true, status: "enabled"}
+     // console.log(status); 
   });
-
- // console.log("end of DeviceEventEmmitter");
-
-  //console.log('start of componentdidmount2');
-    // 어떤 부분인지 정확히 모르겠지만 없어도 돌아가길래 주석처리
-   /*
-    AppState.addEventListener('change', this.handleAppStateChange);
-    NativeAppEventEmitter.addListener('bleManagerDiscoverPeripheral', (data) => {
-      console.log(data);
-    });*/ 
-  
-    // bleManager.start({ showAlert: false });
 
 await Geolocation.getCurrentPosition((success)=>{
  console.log(success);
  this.setState({isGeo: 1});
     }, (e)=>{console.log(e)}, {timeout: 40000});
 
-
-
     if (Platform.OS === 'android' && Platform.Version >= 23) {
       await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION).then((result) => {
-        if (result) {
-          //=====console.log('Permission is OK');
-        } else {
-         /*
-          PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION).then((result) => {
-            if (result) {
-              console.log('User accept');
-            } else {
-              console.log('User refuse');
-            }
-            
- });*/
-        }
+
       });
-    } else if (Platform.OS === 'ios') {
-    }
+    } 
 
    // this.startScan();
- 
-
-   
   }
   
   

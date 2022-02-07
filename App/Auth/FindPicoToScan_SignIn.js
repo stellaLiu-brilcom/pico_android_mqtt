@@ -49,86 +49,35 @@ export default class FindPicoToScan_SignIn extends Component {
 
 
   componentDidMount= async () =>{
- const { strings } = this.props.route.params;
+    const { strings } = this.props.route.params;
     await LocationServicesDialogBox.checkLocationServicesIsEnabled({
        message: strings.location_popup_ble,
        ok: "YES",
-      cancel: "NO",
-      enableHighAccuracy: true, // true => GPS AND NETWORK PROVIDER, false => GPS OR NETWORK PROVIDER
-      showDialog: true, // false => Opens the Location access page directly
-      openLocationServices: true, // false => Directly catch method is called if location services are turned off
-      preventOutSideTouch: false, // true => To prevent the location services window from closing when it is clicked outside
-      preventBackClick: false, // true => To prevent the location services popup from closing when it is clicked back button
-      providerListener: false // true ==> Trigger locationProviderStatusChange listener when the location state changes
+       cancel: "NO",
+       enableHighAccuracy: true, // true => GPS AND NETWORK PROVIDER, false => GPS OR NETWORK PROVIDER
+       showDialog: true, // false => Opens the Location access page directly
+       openLocationServices: true, // false => Directly catch method is called if location services are turned off
+       preventOutSideTouch: false, // true => To prevent the location services window from closing when it is clicked outside
+       preventBackClick: false, // true => To prevent the location services popup from closing when it is clicked back button
+       providerListener: false // true ==> Trigger locationProviderStatusChange listener when the location state changes
   }).then((success) => {
   
-    //setIsScanning(true);
-
     this.setState({isScanning : true});
-    //console.log(this.state.isScanning);
-     //=================console.log(success); // success => {alreadyEnabled: false, enabled: true, status: "enabled"}
 
   }).catch((error) => {
-      //================console.log(error.message); // error.message => "disabled"
+      //console.log(error.message); 
   });
   
   DeviceEventEmitter.addListener('locationProviderStatusChange', function(status) { // only trigger when "providerListener" is enabled
-     // console.log(status); //  status => {enabled: false, status: "disabled"} or {enabled: true, status: "enabled"}
+     // console.log(status); 
   });
-
- // console.log("end of DeviceEventEmmitter");
-
-  //console.log('start of componentdidmount2');
-    // 어떤 부분인지 정확히 모르겠지만 없어도 돌아가길래 주석처리
-   /*
-    AppState.addEventListener('change', this.handleAppStateChange);
-    NativeAppEventEmitter.addListener('bleManagerDiscoverPeripheral', (data) => {
-      console.log(data);
-    });*/ 
-  
-    // bleManager.start({ showAlert: false });
-
-/*
-   await Geolocation.getCurrentPosition((success)=>{
-      console.log(success)
-      //console.log(success.coords.latitude);
-     // console.log(success.coords.longitude);
-    
-    }, (e)=>{console.log(e)}, {timeout: 40000});
-
-    Geolocation.getCurrentPosition((position) => {
-      
-      setLongitude(position.coords.longitude);
- 
-    });
-    */
-  
-
-
 
     if (Platform.OS === 'android' && Platform.Version >= 23) {
       await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION).then((result) => {
-        if (result) {
-          //=====console.log('Permission is OK');
-        } else {
-         /*
-          PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION).then((result) => {
-            if (result) {
-              console.log('User accept');
-            } else {
-              console.log('User refuse');
-            }
-            
- });*/
-        }
+
       });
-    } else if (Platform.OS === 'ios') {
     }
-
     this.startScan();
- 
-
-   
   }
   
   
@@ -190,12 +139,6 @@ componentWillUnmount() {
         ) : (
           <CustomModal
             modalHeaderText={strings.connecting_popup_error_title}
-            // modalSubText={strings.connecting_popup_error_contents}
-            // modalSubText2={strings.connecting_popup_error_contents2}
-            // modalSubText3={strings.connecting_popup_error_contents3}
-            // modalSubText4={strings.connecting_popup_error_contents4}
-            // modalSubText5={strings.connecting_popup_error_contents5}
-            // modalSubText6={strings.connecting_popup_error_contents6}
             modalSubText_update={strings.connecting_popup_error_contents_update}
             modalSubText1_update={strings.connecting_popup_error_contents_update1}
             modalSubText2_update={strings.connecting_popup_error_contents_update2}
