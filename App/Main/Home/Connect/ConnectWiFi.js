@@ -1,5 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { StyleSheet, View, Text, Modal, TouchableOpacity, Dimensions, TextInput, Image, ActivityIndicator } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Modal,
+  TouchableOpacity,
+  Dimensions,
+  TextInput,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
 import { LanguageContext } from '../../../context';
 import { BleManager } from 'react-native-ble-plx';
 import { PicoDevice } from './FindPicoToWiFi';
@@ -8,14 +18,18 @@ import database from '@react-native-firebase/database';
 import WifiManager from 'react-native-wifi-reborn';
 import base64 from 'react-native-base64';
 import colors from '../../../src/colors';
+import useTimer from '../../../src/hooks/useTimer';
 
 export const bleManager = new BleManager();
+const CONNECT_TIME = 30
+const WIFI_REFRESH_TIME = 30
+
 export const ConnectWiFi = ({ navigation }) => {
   const strings = useContext(LanguageContext);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [
-    count, setCount] = useState(-1);
+  const [count, isCountClear, startCount, stopCount] = useTimer()
+  const [_, isWifiCountClear, startWifiCount] = useTimer()
 
   // 일단 password 확인이 안되므로 잠시 보류
   // const [pwValidate, setPwValidate] = useState(null);
@@ -32,22 +46,22 @@ export const ConnectWiFi = ({ navigation }) => {
   const setWiFi = (wifiData) => {
     //console.log("SetWiFI");
     //console.log(wifiData);
-    wifiData.capabilities.replace(/\[/gi, '').split(']')[0] != 'ESS' ? setWiFiSecure(wifiData) : setWiFiFree(wifiData);
+    wifiData.capabilities.replace(/\[/gi, '').split(']')[0] !== 'ESS'
+      ? setWiFiSecure(wifiData)
+      : setWiFiFree(wifiData);
   };
 
   // 비밀번호 없는 와이파이를 이용할 경우
   // 이거 맞음? F5개가...?
-  const setWiFiFree =  (wifiData) => {
-   
+  const setWiFiFree = (wifiData) => {
     //setPassword(0xfffff);
     // setPassword('fffff');
     // setPassword('0xfffff');
     // setPassword(0xFFFFF);
-     setPassword('FFFFF');
+    setPassword('FFFFF');
     // setPassword('0xFFFFF');
     setCurrentSSID(wifiData.SSID);
     setPublicWifiModal(true);
-   
   };
 
   // 비밀번호 있는 와이파이를 이용할 경우
@@ -55,7 +69,6 @@ export const ConnectWiFi = ({ navigation }) => {
     setPassword('');
     setCurrentSSID(wifiData.SSID);
     setWiFiModal(true);
-    
   };
 
   /*
@@ -75,7 +88,7 @@ export const ConnectWiFi = ({ navigation }) => {
     }
   };
 
-  var encryptPassword = function (peripheral, password) {
+  const encryptPassword = function(peripheral, password) {
     //console.log(peripheral);
     let macAddress = replaceAll(peripheral, ':', '');
     //console.log('mac adress'+'  '+macAddress);
@@ -93,16 +106,14 @@ export const ConnectWiFi = ({ navigation }) => {
     for (let i = 0; i < pwArray.length; i++) {
       result[i] = pwArray[i] ^ seed[i];
     }
-    
+
     //console.log("result" + "  "+ result);
-
     //console.log(bin2String(result));
-
 
     return bin2String(result);
   };
 
-  var connectDeviceToWiFi = function () {
+  const connectDeviceToWiFi = function() {
     setWiFiModal(false);
     setPublicWifiModal(false);
     setIsLoading(false);
@@ -115,13 +126,12 @@ export const ConnectWiFi = ({ navigation }) => {
         '0000ffe0-0000-1000-8000-00805f9b34fb',
         '0000ffe2-0000-1000-8000-00805f9b34fb',
         base64.encode(currentSSID),
-       
         //currentSSID
       )
       .then((data) => {
         bleManager
           .writeCharacteristicWithoutResponseForDevice(
-             PicoDevice.device.id,
+            PicoDevice.device.id,
             //'24:6F:28:3C:77:46',
             '0000ffe0-0000-1000-8000-00805f9b34fb',
             '0000ffe3-0000-1000-8000-00805f9b34fb',
@@ -129,7 +139,7 @@ export const ConnectWiFi = ({ navigation }) => {
           )
           .then((data) => {
             PicoDevice.device.cancelConnection();
-            setCount(30);
+            startCount(CONNECT_TIME);
           })
           .catch((error) => navigation.navigate('Connect'));
       })
@@ -137,7 +147,7 @@ export const ConnectWiFi = ({ navigation }) => {
   };
 
 
-  var connectDeviceToPublicWiFi = function () {
+  const connectDeviceToPublicWiFi = function() {
     setWiFiModal(false);
     setPublicWifiModal(false);
     setIsLoading(false);
@@ -160,7 +170,7 @@ export const ConnectWiFi = ({ navigation }) => {
           )
           .then((data) => {
             PicoDevice.device.cancelConnection();
-            setCount(30);
+            startCount(CONNECT_TIME);
           })
           .catch((error) => navigation.navigate('Connect'));
       })
@@ -187,13 +197,11 @@ export const ConnectWiFi = ({ navigation }) => {
 
   function refreshWiFiList() {
     WifiManager.reScanAndLoadWifiList().then((wifiStringList) => {
-      
       for (let i = 0; i < wifiStringList.length; i++) {
         if (wifiStringList[i].SSID.includes('5G') || wifiStringList[i].SSID.includes('5g')) {
           wifiStringList.splice(i, 1);
           i = i - 1;
         }
-        
       }
       setWiFiList(wifiStringList);
     });
@@ -202,58 +210,20 @@ export const ConnectWiFi = ({ navigation }) => {
   // 최초 WiFiList 로드
   useEffect(() => {
     refreshWiFiList();
+    startWifiCount(WIFI_REFRESH_TIME)
+
+    setTimeout(() => {
+      setIsLoading(true);
+    }, 3000);
   }, []);
 
   // 30초마다 WiFiList 갱신
   useEffect(() => {
-    let refreshID = setInterval(() => refreshWiFiList(), 30000);
-    return function cleanup() {
-      clearInterval(refreshID);
-    };
-  });
-
-  // 1초마다 count 갱신
-  useEffect(() => {
-    let countID = setInterval(() => countDown(), 1000);
-    return function cleanup() {
-      clearInterval(countID);
-    };
-  });
-
-  // useEffect(() => {
-  //   let id = PicoDevice.device.id.replace(/:/gi, '');
-  //   let name = PicoDevice.device.name;
-
-  //   console.log(id);
-  //   console.log(name);
-  //   let year = database().getServerTime().getFullYear();
-  //   let month = leadingZeros(database().getServerTime().getMonth() + 1, 2);
-  //   let day = leadingZeros(database().getServerTime().getUTCDate(), 2);
-  //   let hour = leadingZeros(database().getServerTime().getUTCHours(), 2);
-  //   let min = leadingZeros(database().getServerTime().getMinutes(), 2);
-  //   let sec = leadingZeros(checkMinus(database().getServerTime().getSeconds() - 1), 2);
-
-  //   let uri = '/devices/' + id + '/' + year + month + day + hour + min + sec;
-  //   database()
-  //     .ref(uri)
-  //     .once('value')
-  //     .then((snapshot) => {
-  //       // snapshot이 들어오면 와이파이가 정상적으로 붙어서 Realtime DB에 데이터가 전송된다는 뜻!
-  //       if (snapshot.val() != null) {
-  //         setCount(-1);
-  //         setIsLoading(true);
-  //         navigation.navigate('SetUpPico', { id: id, name: name });
-  //       } else {
-  //         // 30초간 Realtime DB에 데이터가 입력되지 않았으므로 와이파이 연결에 실패했다고 가정.
-  //         if (count === 0) {
-  //           setCount(-1);
-  //           setIsLoading(true);
-  //           setSorryModal(true);
-  //         }
-  //       }
-  //     });
-  // }, [count]);
-
+    if (isWifiCountClear) {
+      refreshWiFiList()
+      startWifiCount(WIFI_REFRESH_TIME)
+    }
+  }, [isWifiCountClear]);
 
   useEffect(() => {
     let id = PicoDevice.device.id.replace(/:/gi, '');
@@ -269,27 +239,23 @@ export const ConnectWiFi = ({ navigation }) => {
     let min = leadingZeros(database().getServerTime().getMinutes(), 2);
     let sec = leadingZeros(checkMinus(database().getServerTime().getSeconds() - 1), 2);
 
-
-    var date= new Date();
-    date.setSeconds(date.getSeconds()-20);
-    date= date.toISOString();
-    var start_time= date.substring(0,4)+date.substring(5,7)+date.substring(8,10)+date.substring(11,13)+date.substring(14,16)+date.substring(17,19);
+    var date = new Date();
+    date.setSeconds(date.getSeconds() - 20);
+    date = date.toISOString();
+    const start_time = date.substring(0, 4) + date.substring(5, 7) + date.substring(8, 10) + date.substring(11, 13) + date.substring(14, 16) + date.substring(17, 19);
     //console.log("start time is "+start_time);
     //var end_time= new Date();
     var d = new Date();
     var v = new Date();
-    v.setMinutes(d.getMinutes()+30);
-    v=v.toISOString();
+    v.setMinutes(d.getMinutes() + 30);
+    v = v.toISOString();
     //console.log(v);
-    var end_time= v.substring(0,4)+v.substring(5,7)+v.substring(8,10)+v.substring(11,13)+v.substring(14,16)+v.substring(17,19);
+    const end_time = v.substring(0, 4) + v.substring(5, 7) + v.substring(8, 10) + v.substring(11, 13) + v.substring(14, 16) + v.substring(17, 19);
     //var end_time = start_time
     //console.log("end time is "+end_time);
-
-
-    
-     console.log("start of request");
-     if(count !=0){
+    if (count >= 0) {
       try {
+        console.log('start of request');
         fetch('http://mqtt.brilcom.com:8080/mqtt/GetAirQualityBySec', {
           method: 'POST',
           headers: {
@@ -297,46 +263,36 @@ export const ConnectWiFi = ({ navigation }) => {
             'Content-Type': 'application/json',//서버로 보낼 때 무엇으로 보내는 것인지 알려줌
           },
           body: JSON.stringify({
-
-            "serialNum" : id,
-            "startTime" : start_time,
-            "endTime"   : end_time,
-            "type" : "Co2,Humid,Pm10,Pm25,Temperature,Tvoc"
+            serialNum: id,
+            startTime: start_time,
+            endTime: end_time,
+            type: 'Co2,Humid,Pm10,Pm25,Temperature,Tvoc',
           }),
         })
           .then((response) => response.json())
-          .then((res) => {
+          .then((result) => {
+            console.log('result is =====' + JSON.stringify(result));
 
-            console.log("res is =====------"+JSON.stringify(res));
-            console.log("length of res is===== "+res.data.length);
-            console.log("serial number is ======"+id);
+            if (result?.result !== 'success')
+              return
+            if (isCountClear) {
+              // 30초간 Realtime DB에 데이터가 입력되지 않았으므로 와이파이 연결에 실패했다고 가정.
+              setIsLoading(true);
+              setSorryModal(true);
+              return
+            }
 
-          
-
-             if (res.data.length>0) {
-                setCount(-1);
-                setIsLoading(true);
-                navigation.navigate('SetUpPico', { id: id, name: name });
-             } else {
-                 // 30초간 Realtime DB에 데이터가 입력되지 않았으므로 와이파이 연결에 실패했다고 가정.(30초->120초 변경)
-                if (count === 0) {
-                   setCount(-1);
-                  setIsLoading(true);
-                  setSorryModal(true);
-                }
-              }
-
-         });
+            if (result?.data?.length > 0) {
+              stopCount()
+              setIsLoading(true);
+              navigation.navigate('SetUpPico', { id, name });
+            }
+          });
       } catch (exception) {
         console.log('ERROR :: ', exception);
       }
-    }else{
-      setCount(-1);
-      setIsLoading(true);
-      setSorryModal(true);
-
     }
-  }, [count]);
+  }, [count, isCountClear]);
 
   // 한자리 수 숫자일 경우 십의 자리 수에 0추가
   function leadingZeros(n, digits) {
@@ -358,28 +314,16 @@ export const ConnectWiFi = ({ navigation }) => {
     }
   };
 
-  const countDown = () => {
-    if (count > 0) {
-      setCount(count - 1);
-    }
-  };
-
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(true);
-    }, 3000);
-  }, []);
-
   return (
     <ScrollView style={styles.container}>
       <View style={styles.listContainer}>
         {isLoading ? (
           wifiList.map((wifiData) => (
-            <TouchableOpacity style={styles.wifiListBox} onPress={() => {setWiFi(wifiData)}}>
+            <TouchableOpacity style={styles.wifiListBox} onPress={() => setWiFi(wifiData)}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Text>{wifiData.SSID}</Text>
                 <View style={{ flexDirection: 'row' }}>
-                  {wifiData.capabilities.replace(/\[/gi, '').split(']')[0] != 'ESS' ? (
+                  {wifiData.capabilities.replace(/\[/gi, '').split(']')[0] !== 'ESS' ? (
                     <Image source={require('../../../../Assets/img/icLock.png')} />
                   ) : null}
                   <Image style={{ marginLeft: 10 }} source={getWiFiLevelImage(wifiData.level)} />
@@ -441,8 +385,8 @@ export const ConnectWiFi = ({ navigation }) => {
           </View>
         </Modal>
 
-           {/* public 와이파이 항목에 대한 연결 Modal */}
-           <Modal
+        {/* public 와이파이 항목에 대한 연결 Modal */}
+        <Modal
           animationType="slide"
           statusBarTranslucent={true}
           transparent={true}
