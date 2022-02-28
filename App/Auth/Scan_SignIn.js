@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState,  } from 'react';
 import {BackHandler} from 'react-native';
-import { HeaderBackButton } from '@react-navigation/stack';
 import { StyleSheet, View, Text, Image, Dimensions, ActivityIndicator, NativeModules } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { BackToFromContext, LanguageContext } from '../context';
 import { PicoDevice } from './FindPicoToScan_SignIn';
 import colors from '../src/colors';
+import cal from '../src/calculate';
+import cnt from '../src/constant';
 
 
 export const Scan_SignIn = ({ navigation }) => {
@@ -22,18 +22,16 @@ export const Scan_SignIn = ({ navigation }) => {
   const [humd, setHumd] = useState(PicoDevice.data != null ? '-' : 0);
   const [vocs, setVOCs] = useState(PicoDevice.data != null ? '-' : 0);
   const [co2, setCO2] = useState(PicoDevice.data != null ? '-' : 0);
-  
- 
+
   function handleBackButtonClick() {
     navigation.navigate('SignIn');
     return true;
   }
- 
+
   // 1초 마다 블루투스 연결된 PiCO로 부터 데이터를 읽어오기 위해 호출
   function tick() {
     update();
   }
-
 
   function update() {
     PicoDevice.reload();
@@ -44,7 +42,6 @@ export const Scan_SignIn = ({ navigation }) => {
     setVOCs(PicoDevice.data != null ? PicoDevice.data.vocs.value : 0);
     setCO2(PicoDevice.data != null ? PicoDevice.data.co2.value : 0);
 
-    
     if (count > 5) {
       setIsLoading(true);
     }
@@ -54,27 +51,25 @@ export const Scan_SignIn = ({ navigation }) => {
   }
 
   const getPm25Color = (value) => {
-    if (0 <= value && value <= 15) {
+    if (cal.boundaryPM25(value) === cnt.PM25_GOOD)
       return colors.azure;
-    } else if (16 <= value && value <= 35) {
+    else if (cal.boundaryPM25(value) === cnt.PM25_MOD)
       return colors.darkLimeGreen;
-    } else if (36 <= value && value <= 75) {
+    else if (cal.boundaryPM25(value) === cnt.PM25_BAD)
       return colors.lightOrange;
-    } else {
+    else if (cal.boundaryPM25(value) === cnt.PM25_VERY_BAD)
       return colors.coral;
-    }
   };
 
   const getPm25Picture = (value) => {
-    if (0 <= value && value <= 15) {
+    if (cal.boundaryPM25(value) === cnt.PM25_GOOD)
       return require('../../Assets/img/icPm25Blue.png');
-    } else if (16 <= value && value <= 35) {
+    else if (cal.boundaryPM25(value) === cnt.PM25_MOD)
       return require('../../Assets/img/icPm25Green.png');
-    } else if (36 <= value && value <= 75) {
+    else if (cal.boundaryPM25(value) === cnt.PM25_BAD)
       return require('../../Assets/img/icPm25Orange.png');
-    } else {
+    else if (cal.boundaryPM25(value) === cnt.PM25_VERY_BAD)
       return require('../../Assets/img/icPm25Red.png');
-    }
   };
 
   const getPm10Color = (value) => {
@@ -188,7 +183,6 @@ export const Scan_SignIn = ({ navigation }) => {
       return require('../../Assets/img/icCo2Red.png');
     }
   };
-  
 
   // 1초 마다 블루투스에서 가져오는 값 갱신
   useEffect(() => {
@@ -235,7 +229,7 @@ export const Scan_SignIn = ({ navigation }) => {
           </View>
           <View style={styles.box}>
             <View style={styles.stateBox}>
-              <View style={[styles.bgStateBar, { backgroundColor: getTemperatureColor(temp) }]}></View>
+              <View style={[styles.bgStateBar, { backgroundColor: getTemperatureColor(temp) }]}/>
               <Image style={styles.icTemp} source={getTemperaturePicture(temp)} />
               <Text style={[styles.temperature, { color: getTemperatureColor(temp) }]}>{strings.scan_label_temperature}</Text>
               <View style={styles.tempValueView}>
@@ -246,7 +240,7 @@ export const Scan_SignIn = ({ navigation }) => {
           </View>
           <View style={styles.box}>
             <View style={styles.stateBox}>
-              <View style={[styles.bgStateBar, { backgroundColor: getHumidColor(humd) }]}></View>
+              <View style={[styles.bgStateBar, { backgroundColor: getHumidColor(humd) }]}/>
               <Image style={styles.icHumdi} source={getHumidPicture(humd)} />
               <Text style={[styles.humidity, { color: getHumidColor(humd) }]}>{strings.scan_label_humidity}</Text>
               <View style={styles.humdiValueView}>
@@ -257,7 +251,7 @@ export const Scan_SignIn = ({ navigation }) => {
           </View>
           <View style={styles.box}>
             <View style={styles.stateBox}>
-              <View style={[styles.bgStateBar, { backgroundColor: getTvocColor(vocs) }]}></View>
+              <View style={[styles.bgStateBar, { backgroundColor: getTvocColor(vocs) }]}/>
               <Image style={styles.icVoc} source={getTvocPicture(vocs)} />
               <Text style={[styles.Voc, { color: getTvocColor(vocs) }]}>{strings.scan_label_vocs}</Text>
               <View style={styles.vocValueView}>
@@ -268,7 +262,7 @@ export const Scan_SignIn = ({ navigation }) => {
           </View>
           <View style={styles.box}>
             <View style={styles.stateBox}>
-              <View style={[styles.bgStateBar, { backgroundColor: getCo2Color(co2) }]}></View>
+              <View style={[styles.bgStateBar, { backgroundColor: getCo2Color(co2) }]}/>
               <Image style={styles.icCO2} source={getCo2Picture(co2)} />
               <Text style={[styles.CO2, { color: getCo2Color(co2) }]}>{strings.scan_label_co2}</Text>
               <View style={styles.co2ValueView}>

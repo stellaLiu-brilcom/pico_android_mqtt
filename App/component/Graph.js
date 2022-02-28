@@ -5,7 +5,8 @@ import { LineChart, Grid, XAxis, BarChart, AreaChart, Path } from 'react-native-
 import { Circle, G, Rect, Text, ClipPath, Line, Defs, Svg } from 'react-native-svg';
 import colors from '../src/colors';
 import Tooltip from './Tooltip';
-import { color } from 'react-native-reanimated';
+import cal from '../src/calculate';
+import cnt from '../src/constant';
 
 export const Graph = (props) => {
   let tempArray = [];
@@ -20,7 +21,7 @@ export const Graph = (props) => {
   ];
   let min=10000;
   let max=0;
-  let cnt=0;
+  let count=0;
   let tempArrayTime = [];
   let finalArray = [];
   const date = new Date();
@@ -85,7 +86,7 @@ export const Graph = (props) => {
             }
             if(array[i]!=0){
                 return(<Line key={index} stroke={'#E7E7E7'} strokeWidth={2} x1={x(index)} x2={x(i)} y1={y(array[index])} y2={y(array[i])}/>);
-              } 
+              }
             }
         }
       }
@@ -93,8 +94,7 @@ export const Graph = (props) => {
   };
 
 
-  function getTimeStamp() { 
-  
+  function getTimeStamp() {
     let y = date.getFullYear();
     let m = date.getMonth() + 1;
     let d = date.getDate();
@@ -155,7 +155,6 @@ export const Graph = (props) => {
     new_date.setUTCHours(new_date.getUTCHours()+time_diff);
 
     let s1 = new_date.toISOString()
-    
     s1= s1.substring(0,4)+s1.substring(5,7)+s1.substring(8,10)+s1.substring(11,13)+s1.substring(14,16)+s1.substring(17,19);
     console.log('getTimeStampresult : ' + s1);
     return s1;
@@ -207,7 +206,7 @@ export const Graph = (props) => {
     new_date.setUTCMilliseconds(0);
     new_date.setUTCHours(new_date.getUTCHours()+time_diff);
     let s1 = new_date.toISOString();
-   
+
     s1= s1.substring(0,4)+s1.substring(5,7)+s1.substring(8,10)+s1.substring(11,13)+s1.substring(14,16)+s1.substring(17,19);
     console.log('getTimeBeforeresult : ' + s1)
     return s1;
@@ -228,20 +227,19 @@ export const Graph = (props) => {
   const setDotColorFunction = (value, index) => {
     var getDotColor = {
       // State가 Pm2.5일 경우
-      
+
       Pm25: (value, index) => {
         if(index==96){
           return 'transparent';
         }
-        else if (0 < value && value <= 15) {
+        if (cal.boundaryPM25(value) === cnt.PM25_GOOD)
           return colors.azure;
-        } else if (16 <= value && value <= 35) {
+        else if (cal.boundaryPM25(value) === cnt.PM25_MOD)
           return colors.darkLimeGreen;
-        } else if (36 <= value && value <= 75) {
+        else if (cal.boundaryPM25(value) === cnt.PM25_BAD)
           return colors.lightOrange;
-        } else if (75 < value) {
+        else if (cal.boundaryPM25(value) === cnt.PM25_VERY_BAD)
           return colors.coral;
-        }
       },
       // State가 Pm10일 경우
       Pm10: (value) => {
@@ -260,7 +258,6 @@ export const Graph = (props) => {
       },
       // State가 Temperature일 경우
       Temperature: (value) => {
-
         if(index==96){
           return 'transparent';
         }
@@ -276,8 +273,6 @@ export const Graph = (props) => {
       },
       // State가 Humid일 경우
       Humid: (value) => {
-       
-       
         if(index==96){
           return 'transparent';
         }
@@ -291,8 +286,6 @@ export const Graph = (props) => {
       },
       // State가 VOCs일 경우
       Tvoc: (value) => {
-        
-        
         if(index==96){
           return 'transparent';
         }
@@ -306,7 +299,6 @@ export const Graph = (props) => {
       },
       // State가 CO2일 경우
       Co2: (value) => {
-
         if(index==96){
           return 'transparent';
         }
@@ -435,9 +427,7 @@ export const Graph = (props) => {
     }
   }
 
-
   function makeDeviceAirInfo() {
-
     try {
       fetch('http://mqtt.brilcom.com:8080/mqtt/GetAirQualityForChart', {
         method: 'POST',
@@ -465,7 +455,7 @@ export const Graph = (props) => {
 
 
   //mqtt 이전 버전
-  {/* 
+  {/*
   function makeDeviceAirInfo() {
     fetch('https://us-central1-pico-home.cloudfunctions.net/GetAirInfo', {
       method: 'POST',
@@ -483,7 +473,7 @@ export const Graph = (props) => {
     })
       .then((response) => response.json())
       .then((res) => {
-  
+
        //console.log(res.Info.AirInfo[0].ReportTime);
        const ReportTime = res.Info.AirInfo[0].ReportTime;
 
@@ -493,14 +483,12 @@ export const Graph = (props) => {
        setDeviceAirInfo(ReportTime, AirType);
 
     });
-      
+
   };
 */}
   // 그래프의 값을 Dot으로 표현
   const Decorator = ({ x, y, data, line }) => {
-   
     return data.map((value, index) => (
- 
       <Circle
         key={index}
         cx={x(index)}
@@ -528,7 +516,6 @@ export const Graph = (props) => {
   useEffect(() => {
 
     try {
- 
       for (let i = 0; i < deviceAirInfo.length; i++) {
         tempArray.push(deviceAirInfo[i][props.state]);
         tempArrayTime.push(deviceAirInfo[i]['ReportTime'].substring(11, 16));
@@ -562,11 +549,11 @@ export const Graph = (props) => {
           if(finalArray[i]<min){
             min=finalArray[i];
           }
-          cnt=cnt+1;
+          count++
         }
       }
 
-      if(cnt==0){
+      if(count === 0){
         min=0;
       }
 
@@ -580,14 +567,12 @@ export const Graph = (props) => {
         tempArray = [];
         finalArray=[];
       }, 1000);
-    
+
     } catch (exception) {
       //console.log(exception);
     }
 
   }, [deviceAirInfo]);
-
-
 
   return (
     <View style={{ flex: 1 }}>
