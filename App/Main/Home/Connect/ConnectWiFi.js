@@ -273,8 +273,6 @@ export const ConnectWiFi = ({ navigation }) => {
           .then((result) => {
             console.log('result is =====' + JSON.stringify(result));
 
-            if (result?.result !== 'success')
-              return
             if (isCountClear) {
               // 30초간 Realtime DB에 데이터가 입력되지 않았으므로 와이파이 연결에 실패했다고 가정.
               setIsLoading(true);
@@ -438,12 +436,13 @@ export const ConnectWiFi = ({ navigation }) => {
               <TouchableOpacity style={styles.modalCancel} onPress={() => setSorryModal(false)}>
                 <Image source={require('../../../../Assets/img/icCancel.png')} />
               </TouchableOpacity>
-              <Text style={styles.modalTitle}>{strings.wifisetting_2_popup_error_title}</Text>
+              <Text style={styles.modalTitle}>{strings.wifisetting_3_popup_error_title}</Text>
               <Text style={styles.modalTitle}>{strings.wifisetting_3_popup_error}</Text>
               <TouchableOpacity
                 style={styles.buttonStyle}
                 onPress={() => {
-                  setSorryModal(false), navigation.navigate('Connect');
+                  setSorryModal(false)
+                  navigation.navigate('Connect');
                 }}>
                 <Text style={styles.buttonText}>{strings.wifisetting_3_popup_button_ok}</Text>
               </TouchableOpacity>
