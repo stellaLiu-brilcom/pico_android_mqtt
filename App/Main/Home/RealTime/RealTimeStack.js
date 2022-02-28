@@ -78,7 +78,7 @@ export const RealTimeStackScreen = () => {
             }
           });
       } catch (exception) {
-        console.log('ERROR :: ', exception);
+        console.log('ERROR :: ', 'mqtt/GetAirQuality', exception);
       }
   };
 
@@ -91,14 +91,14 @@ export const RealTimeStackScreen = () => {
     let sec = leadingZeros(checkMinus(database().getServerTime().getSeconds() - 1), 2);
     let uri = '/devices/' + devices[idx].SerialNum + '/' + year + month + day + hour + min + sec;
 
-    
+
     database()
       .ref(uri)
       .once('value')
       .then((snapshot) => {
         snapshotToArray(snapshot, idx);
       });
-      
+
   };
 
 
@@ -174,7 +174,7 @@ export const RealTimeStackScreen = () => {
   // 36자리 info data parsing
   const makeStat = (props) => {
     let stat = props.substring(0, 4);
-    let sum = 0;  
+    let sum = 0;
     let hex = 4096;
     for (let i = 0; i < 4; i++) {
       let c = stat.charAt(i);
@@ -188,10 +188,10 @@ export const RealTimeStackScreen = () => {
   // refresh값이 변경 될 경우 airInfo 새로 Load.
   useEffect(() => {
 
-    if (devices.length != 0) {
+    if (devices.length !== 0) {
       for (let i = 0; i < devices.length; i++) {
         getRealtimeAirInfo2(i);
-        getRealtimeAirInfo(i);     
+        getRealtimeAirInfo(i);
       }
     } else {
       setDeviceAndAirInfo([]);

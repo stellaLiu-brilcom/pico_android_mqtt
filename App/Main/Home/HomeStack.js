@@ -208,7 +208,7 @@ export const HomeStackScreen = () => {
 
   const LocationOn = async () => {
    // console.log("Home stack.js");
-   
+
 
    // console.log("async");
     try {
@@ -227,7 +227,7 @@ export const HomeStackScreen = () => {
    setIsLocationOff(true)
       //console.log(success);
 
-   
+
 
 
     } catch (err) {
@@ -236,27 +236,27 @@ export const HomeStackScreen = () => {
       //console.log(err)
     }
 
-    
+
     BackHandler.addEventListener('hardwareBackPress', () => { //(optional) you can use it if you need it
       //do not use this method if you are using navigation."preventBackClick: false" is already doing the same thing.
       LocationServicesDialogBox.forceCloseDialog();
    });
-   
-  
+
+
 
     DeviceEventEmitter.addListener('locationProviderStatusChange', function(status) { // only trigger when "providerListener" is enabled
-    //console.log("Device Emitter");     
+    //console.log("Device Emitter");
     //console.log(status); //  status => {enabled: false, status: "disabled"} or {enabled: true, status: "enabled"}
-        
+
      });
 
     }
 
-  
+
 
 
 useEffect(() => {
-  LocationOn();   
+  LocationOn();
 }, []);
 
 

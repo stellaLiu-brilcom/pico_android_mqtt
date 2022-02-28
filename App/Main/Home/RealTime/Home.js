@@ -9,15 +9,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   NativeModules,
-  Platform,
-  PermissionsAndroid,
   Linking,
-  Button
 } from 'react-native';
-
-import {moment} from 'moment-timezone';
-
-
 import {
   UserContext,
   DeviceAndAirInfoContext,
@@ -27,17 +20,12 @@ import {
   DeviceContext,
   OnlineContext,
 } from '../../../context';
-// import fontFamily from '../../../src/fontFamily';
 import LinearGradient from 'react-native-linear-gradient';
 import BitSwiper from 'react-native-bit-swiper';
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
 import Modal from 'react-native-modal';
-import * as Mqtt from 'react-native-native-mqtt';
-import AsyncStorage from '@react-native-community/async-storage';
 import colors from '../../../src/colors';
-import { start } from 'react-native-ble-manager';
-
 
 export const Home = ({ navigation }) => {
   const strings = useContext(LanguageContext);
@@ -73,10 +61,7 @@ export const Home = ({ navigation }) => {
   const [pollenExplain, setPollenEx] = useState(false);
   const [isOffLine, setIsOffLine] = useState(false);
 
-  
-
 function open_WhatsApp() {
- 
     Linking.openURL("market://details?id=com.brilcom.bandi.pico");
   }
 
@@ -318,7 +303,7 @@ function open_WhatsApp() {
     }
 },[]);
 */
-  
+
   // 현재 위치의 위도(latitude), 경도(longitude)값 설정
   // 현재 위치의 위,경도를 기준으로 Temperature/Humid/Ozone 설정
   useEffect(() => {
@@ -369,19 +354,15 @@ function open_WhatsApp() {
   //       '&unit_system=si&fields=pm25%2Cpm10%2Co3%2Cpollen_tree%2Cpollen_weed&apikey=RHjOKa3an7WYAniMUD26L7Nkelc2ymkQ';
   //     fetch(url)
   //       .then((response) => response.json())
-  //       .then((responseJson) => 
+  //       .then((responseJson) =>
   //       {
-         
 
-          
   //         console.log(url);
   //         console.log(responseJson);
 
   //         setPublicStateInfo(responseJson)});
   //   }
   // }, [addressName]);
-
-
 
   useEffect(() => {
     if (latitude != null && longitude != null) {
@@ -393,20 +374,14 @@ function open_WhatsApp() {
         '&fields=particulateMatter25,particulateMatter10,pollutantO3,treeIndex,weedIndex&timesteps=current&units=metric&apikey=pyZzjTuiJMvG8VZSfF9PqPxXXPlizgo5';
       fetch(url)
         .then((response) => response.json())
-        .then((responseJson) => 
+        .then((responseJson) =>
         {
-         
-
-          
           //console.log(url);
           // console.log(responseJson.data.timelines[0].intervals[0].values);
 
           setPublicStateInfo(responseJson)});
     }
   }, [addressName]);
-
-
-
 
   // PublicStateInfo가 설정되면
   // 내부의 Pm25/Pm10/Ozone값을 각각 설정
@@ -427,10 +402,6 @@ function open_WhatsApp() {
 
   }, [publicStateInfo]);
 
-  
-
-
-
   useEffect(() => {
 
     try {
@@ -440,17 +411,12 @@ function open_WhatsApp() {
           Accept: 'application/json',
           'Content-Type': 'application/json',//서버로 보낼 때 무엇으로 보내는 것인지 알려줌
         },
-        body: JSON.stringify({
-
-
-        }),
+        body: JSON.stringify({}),
       })
         .then((response) => response.json())
         .then((res) => {
-
           //console.log(res);
          // console.log(res.version);
-
         if(res.version != "3.0.14"){
           //console.log("different version");
           setConnectInfo(true);
@@ -459,21 +425,16 @@ function open_WhatsApp() {
         }
        });
     } catch (exception) {
-      console.log('ERROR :: ', exception);
+      console.log('ERROR :: ', 'web.app/version', exception);
     }
+  }, []);
 
-
-    
-  }, []); 
-  
-  
   useEffect(() => {
     let timerID = setInterval(() => tick(), 1000);
     return function cleanup() {
       clearInterval(timerID);
     };
-  }); 
-  
+  });
 
   useEffect(() => {
     setTimeout(() => {
@@ -481,17 +442,13 @@ function open_WhatsApp() {
     }, 2000);
   }, []);
 
-
-
-
-
   return (
     <View style={styles.container}>
       {isLoading ? (
         <View style={{ alignItems: 'center' }}>
           <LinearGradient
             colors={[getBackgroundState(parseInt(publicPm25)), 'transparent']}
-            style={styles.linearGradientStyle}></LinearGradient>
+            style={styles.linearGradientStyle}/>
           <View style={{ position: 'absolute' }}>
             <Image style={{ width: width, height: height * 0.1 }} source={getBackWaveLayerState1(parseInt(publicPm25))} />
           </View>
@@ -518,7 +475,7 @@ function open_WhatsApp() {
               <View style={styles.dateStyle}>
                 <Text style={styles.dateText}>{monthAndDay()}</Text>
               </View>
-              <View style={styles.divider}></View>
+              <View style={styles.divider}/>
               <View style={styles.timeStyle}>
                 <Text style={styles.timeText}>{amPm}</Text>
                 <Text style={styles.timeText}> </Text>
@@ -627,7 +584,7 @@ function open_WhatsApp() {
                   <View style={styles.picoInfo}>
                     <Text style={styles.picoOffText}>{strings.main_no_picohome_title}</Text>
                   </View>
-                  <View style={(styles.picoStateInfo, styles.picoOffInfo)}>
+                  <View style={[styles.picoStateInfo, styles.picoOffInfo]}>
                     <Text style={styles.picoOffInfoText}>{strings.main_no_picohome_contents}</Text>
                   </View>
                   <View style={styles.connectPico}>
@@ -662,7 +619,7 @@ function open_WhatsApp() {
             </View>
           ) : (
             <View>
-              {devices.length != 0 && deviceAndAirInfo.length != 0 ? (
+              {devices.length !== 0 && deviceAndAirInfo.length !== 0 ? (
                 <BitSwiper
                   items={deviceAndAirInfo}
                   style={{ width: width }}
@@ -858,11 +815,6 @@ const styles = StyleSheet.create({
     height: height,
     backgroundColor: colors.white,
     alignItems: 'center',
-  },
-  indicator: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   linearGradientStyle: {
     position: 'absolute',
@@ -1075,54 +1027,6 @@ const styles = StyleSheet.create({
     right: 5,
     top: 0,
   },
-  modalContainer: {
-    width: width * 0.9,
-    paddingHorizontal: 24,
-    paddingTop: 32,
-    paddingBottom: 24,
-    alignItems: 'center',
-    borderRadius: 10,
-    backgroundColor: colors.white,
-  },
-  modalCancel: { position: 'absolute', top: 12, right: 12 },
-  modalHeaderTextView: {
-    width: width * 0.9,
-    alignItems: 'center',
-  },
-  modalHeaderText: { fontSize: 22, fontFamily: 'NotoSans-Bold' },
-  modalSubTextView: {
-    width: width * 0.75,
-    marginTop: height * 0.0281,
-  },
-  modalSubText: {
-    textAlign: 'center',
-    fontFamily: 'NotoSans-Regular',
-    fontSize: 14,
-    color: colors.brownGrey,
-  },
-  modalButton: {
-    width: width * 0.3875,
-    height: height * 0.0704,
-    marginTop: height * 0.0423,
-    marginHorizontal: 4,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 30,
-    backgroundColor: colors.azure,
-    shadowColor: 'rgba(0, 172, 255, 0.2)',
-    shadowOffset: {
-      width: 0,
-      height: 10,
-    },
-    shadowRadius: 16,
-    shadowOpacity: 1,
-    elevation: 1,
-  },
-  modalButtonText: {
-    fontSize: 20,
-    fontFamily: 'NotoSans-Bold',
-    color: colors.white,
-  },
   viewBox: {
     width: width * 0.85,
     alignItems: 'center',
@@ -1317,7 +1221,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
   },
-
   connectPicoPlus: {
     width: addWidth,
     height: addHeight,
@@ -1325,7 +1228,6 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 10,
     backgroundColor: colors.marineBlue,
   },
-  
   connectPicoPlus2: {
     width: addWidth,
     height: addHeight,
@@ -1361,7 +1263,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-
   modalContainer: {
     width: width * 0.9,
     paddingHorizontal: 24,

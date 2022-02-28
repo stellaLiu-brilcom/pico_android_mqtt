@@ -84,7 +84,7 @@ export const ViewAll = ({ navigation }) => {
     let bad = 0;
     let vbad = 0;
     for (let i = 0; i < len; i++) {
-      if (snapShotAndCount.length != 0 && snapShotAndCount[i].c >= 5) {
+      if (snapShotAndCount.length !== 0 && snapShotAndCount[i].c >= 5) {
         continue;
       } else {
         if (0 <= deviceAndAirInfo[i].stateInfo.pm25 && deviceAndAirInfo[i].stateInfo.pm25 <= 15) {
@@ -144,7 +144,7 @@ export const ViewAll = ({ navigation }) => {
   };
 
   useEffect(() => {
-    if (deviceAndAirInfo.length != 0) {
+    if (deviceAndAirInfo.length !== 0) {
       getDeviceNum(deviceAndAirInfo.length);
     } else {
       getDeviceNum(0);
@@ -156,7 +156,7 @@ export const ViewAll = ({ navigation }) => {
       {isLoading ? (
         <View style={{ alignItems: 'center' }}>
           <View style={styles.deleteViewStyle}>
-            <View></View>
+            <View/>
             {isDelete ? (
               <TouchableOpacity style={styles.deleteButton} onPress={() => toggleDelete()}>
                 <Image source={require('../../../../Assets/img/icDeleteOff.png')} />
@@ -171,25 +171,25 @@ export const ViewAll = ({ navigation }) => {
             <Text style={styles.pm25Text}>PM2.5</Text>
             <View style={styles.deviceNumberView}>
               <View style={styles.deviceNumberBox}>
-                <View style={goodState.indicator}></View>
+                <View style={goodState.indicator}/>
                 <Text style={goodState.text}>{Good}</Text>
               </View>
               <View style={styles.deviceNumberBox}>
-                <View style={modState.indicator}></View>
+                <View style={modState.indicator}/>
                 <Text style={modState.text}>{Mod}</Text>
               </View>
               <View style={styles.deviceNumberBox}>
-                <View style={badState.indicator}></View>
+                <View style={badState.indicator}/>
                 <Text style={badState.text}>{Bad}</Text>
               </View>
               <View style={styles.deviceNumberBox}>
-                <View style={veryBadState.indicator}></View>
+                <View style={veryBadState.indicator}/>
                 <Text style={veryBadState.text}>{VeryBad}</Text>
               </View>
             </View>
           </View>
           <View style={styles.flatListView}>
-            {devices.length != 0 && deviceAndAirInfo.length != 0 ? (
+            {devices.length !== 0 && deviceAndAirInfo.length !== 0 ? (
               <FlatList
                 numColumns={numColumns}
                 data={deviceAndAirInfo}
@@ -200,7 +200,7 @@ export const ViewAll = ({ navigation }) => {
                       snapShotAndCount[index].c >= 5 ? (
                         <View>
                           <View style={styles.deviceBgWhite}>
-                            <View style={styles.bgColor}></View>
+                            <View style={styles.bgColor}/>
                             <View style={{ alignItems: 'center' }}>
                               <View style={styles.devicePlace}>
                                 <Text style={styles.txtPlaceColor}>{item.Description}</Text>
@@ -212,7 +212,8 @@ export const ViewAll = ({ navigation }) => {
                             <View style={styles.deviceDeleteButton}>
                               <TouchableOpacity
                                 onPress={() => {
-                                  setDeleteTarget(item.Id), setDeleteModal(true);
+                                  setDeleteTarget(item.Id)
+                                  setDeleteModal(true);
                                 }}>
                                 <Image source={require('../../../../Assets/img/icDeletePicohome.png')} />
                               </TouchableOpacity>
@@ -231,7 +232,7 @@ export const ViewAll = ({ navigation }) => {
                               })
                             }>
                             <View style={styles.deviceBgWhite}>
-                              <View style={getDeviceStateColor(item.stateInfo.pm25)}></View>
+                              <View style={getDeviceStateColor(item.stateInfo.pm25)}/>
                               <View style={{ alignItems: 'center' }}>
                                 <View style={styles.devicePlace}>
                                   <Text style={getDeviceTextPlaceColor(item.stateInfo.pm25)}>{item.Description}</Text>
@@ -244,7 +245,8 @@ export const ViewAll = ({ navigation }) => {
                             <View style={styles.deviceDeleteButton}>
                               <TouchableOpacity
                                 onPress={() => {
-                                  setDeleteTarget(item.Id), setDeleteModal(true);
+                                  setDeleteTarget(item.Id)
+                                  setDeleteModal(true);
                                 }}>
                                 <Image source={require('../../../../Assets/img/icDeletePicohome.png')} />
                               </TouchableOpacity>

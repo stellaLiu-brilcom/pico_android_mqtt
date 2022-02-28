@@ -458,7 +458,7 @@ export const Graph = (props) => {
           setDeviceAirInfo(res);
        });
     } catch (exception) {
-      console.log('ERROR :: ', exception);
+      console.log('ERROR :: ', 'GetAirQualityForChart', exception);
     }
   }
 
