@@ -22,9 +22,7 @@ export const SetUpPico = ({ navigation, route }) => {
   const userInfo = useContext(UserContext);
   const placeList = useContext(PlaceListContext);
 
-  const { id } = route.params;
-  const { name } = route.params;
- 
+  const { id, name, firmware } = route.params;
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -101,7 +99,7 @@ export const SetUpPico = ({ navigation, route }) => {
         apiKey: userInfo.apiKey, // userInfo.apiKey,
         serialNum: id,
         modelName: name,
-        firmwareVersion: '01.01.02',
+        firmwareVersion: firmware,
         picoName: newDeviceName,
         description: newDevicePlace,
         lang: '',

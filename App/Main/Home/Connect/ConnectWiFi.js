@@ -37,6 +37,8 @@ export const ConnectWiFi = ({ navigation }) => {
   const [currentSSID, setCurrentSSID] = useState(null);
   const [password, setPassword] = useState(null);
 
+  const [firmware, setFirmware] = useState('')
+
   const [publicwifimodal, setPublicWifiModal] = useState(false);
   const [sorryModal, setSorryModal] = useState(false);
   const [wifiModal, setWiFiModal] = useState(false);
@@ -120,6 +122,15 @@ export const ConnectWiFi = ({ navigation }) => {
     //console.log(password);
     console.log(PicoDevice.device.id);
     bleManager
+      .readCharacteristicForDevice(
+        PicoDevice.device.id,
+        '0000180A',
+        '00002A26-0000-1000-8000-00805f9b34fb'
+      )
+      .then(({ value }) => {
+        setFirmware(base64.decode(value))
+      })
+    bleManager
       .writeCharacteristicWithoutResponseForDevice(
         PicoDevice.device.id,
         //'24:6F:28:3C:77:46',
@@ -152,6 +163,15 @@ export const ConnectWiFi = ({ navigation }) => {
     setPublicWifiModal(false);
     setIsLoading(false);
     //console.log(password);
+    bleManager
+      .readCharacteristicForDevice(
+        PicoDevice.device.id,
+        '0000180A',
+        '00002A26-0000-1000-8000-00805f9b34fb'
+      )
+      .then(({ value }) => {
+        setFirmware(base64.decode(value))
+      })
     bleManager
       .writeCharacteristicWithoutResponseForDevice(
         PicoDevice.device.id,
@@ -283,7 +303,7 @@ export const ConnectWiFi = ({ navigation }) => {
             if (result?.data?.length > 0) {
               stopCount()
               setIsLoading(true);
-              navigation.navigate('SetUpPico', { id, name });
+              navigation.navigate('SetUpPico', { id, name, firmware });
             }
           });
       } catch (exception) {
