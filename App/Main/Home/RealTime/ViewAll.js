@@ -11,6 +11,8 @@ import {
 } from '../../../context';
 import Modal from 'react-native-modal';
 import colors from '../../../src/colors';
+import cal from '../../../src/calculate';
+import cnt from '../../../src/constant';
 
 export const ViewAll = ({ navigation }) => {
   const { getDeviceState } = useContext(SettingContext);
@@ -34,6 +36,7 @@ export const ViewAll = ({ navigation }) => {
   const [Mod, setMod] = useState(0);
   const [Bad, setBad] = useState(0);
   const [VeryBad, setVeryBad] = useState(0);
+  const [Empty, setEmpty] = useState(0);
 
   const [isDelete, setDelete] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
@@ -83,64 +86,68 @@ export const ViewAll = ({ navigation }) => {
     let mod = 0;
     let bad = 0;
     let vbad = 0;
+    let empty = 0
+
     for (let i = 0; i < len; i++) {
       if (snapShotAndCount.length !== 0 && snapShotAndCount[i].c >= 5) {
         continue;
       } else {
-        if (0 <= deviceAndAirInfo[i].stateInfo.pm25 && deviceAndAirInfo[i].stateInfo.pm25 <= 15) {
-          good = good + 1;
-        } else if (16 <= deviceAndAirInfo[i].stateInfo.pm25 && deviceAndAirInfo[i].stateInfo.pm25 <= 35) {
-          mod = mod + 1;
-        } else if (36 <= deviceAndAirInfo[i].stateInfo.pm25 && deviceAndAirInfo[i].stateInfo.pm25 <= 75) {
-          bad = bad + 1;
-        } else {
-          vbad = vbad + 1;
-        }
+        if (cal.boundaryPM25(deviceAndAirInfo[i].stateInfo.pm25) === cnt.PM25_GOOD)
+          good++
+        else if (cal.boundaryPM25(deviceAndAirInfo[i].stateInfo.pm25) === cnt.PM25_MOD)
+          mod++
+        else if (cal.boundaryPM25(deviceAndAirInfo[i].stateInfo.pm25) === cnt.PM25_BAD)
+          bad++
+        else if (cal.boundaryPM25(deviceAndAirInfo[i].stateInfo.pm25) === cnt.PM25_VERY_BAD)
+          vbad++
+        else if (cal.boundaryPM25(deviceAndAirInfo[i].stateInfo.pm25) === cnt.PM25_EMPTY)
+          empty++
       }
     }
     setGood(good);
     setMod(mod);
     setBad(bad);
     setVeryBad(vbad);
+    setEmpty(empty)
   };
 
-  const getDeviceStateColor = (props) => {
-    if (0 <= props && props <= 15) {
-      DeviceStateColor = goodState.bgColor;
-    } else if (16 <= props && props <= 35) {
-      DeviceStateColor = modState.bgColor;
-    } else if (36 <= props && props <= 75) {
-      DeviceStateColor = badState.bgColor;
-    } else {
-      DeviceStateColor = veryBadState.bgColor;
-    }
-    return DeviceStateColor;
+  const getDeviceStateColor = value => {
+    if (cal.boundaryPM25(value) === cnt.PM25_GOOD)
+      return goodState.bgColor
+    else if (cal.boundaryPM25(value) === cnt.PM25_MOD)
+      return modState.bgColor
+    else if (cal.boundaryPM25(value) === cnt.PM25_BAD)
+      return badState.bgColor
+    else if (cal.boundaryPM25(value) === cnt.PM25_VERY_BAD)
+      return veryBadState.bgColor
+    else
+      return emptyState.bgColor
   };
 
-  const getDeviceTextPlaceColor = (props) => {
-    if (0 <= props && props <= 15) {
-      DeviceTextPlaceColor = goodState.txtPlaceColor;
-    } else if (16 <= props && props <= 35) {
-      DeviceTextPlaceColor = modState.txtPlaceColor;
-    } else if (36 <= props && props <= 75) {
-      DeviceTextPlaceColor = badState.txtPlaceColor;
-    } else {
-      DeviceTextPlaceColor = veryBadState.txtPlaceColor;
-    }
-    return DeviceTextPlaceColor;
+  const getDeviceTextPlaceColor = value => {
+    if (cal.boundaryPM25(value) === cnt.PM25_GOOD)
+      return goodState.txtPlaceColor
+    else if (cal.boundaryPM25(value) === cnt.PM25_MOD)
+      return modState.txtPlaceColor
+    else if (cal.boundaryPM25(value) === cnt.PM25_BAD)
+      return badState.txtPlaceColor
+    else if (cal.boundaryPM25(value) === cnt.PM25_VERY_BAD)
+      return veryBadState.txtPlaceColor
+    else
+      return emptyState.txtPlaceColor
   };
 
-  const getDeviceTextPicoColor = (props) => {
-    if (0 <= props && props <= 15) {
-      DeviceTextPicoColor = goodState.txtpiCo;
-    } else if (16 <= props && props <= 35) {
-      DeviceTextPicoColor = modState.txtpiCo;
-    } else if (36 <= props && props <= 75) {
-      DeviceTextPicoColor = badState.txtpiCo;
-    } else {
-      DeviceTextPicoColor = veryBadState.txtpiCo;
-    }
-    return DeviceTextPicoColor;
+  const getDeviceTextPicoColor = value => {
+    if (cal.boundaryPM25(value) === cnt.PM25_GOOD)
+      return goodState.txtpiCo
+    else if (cal.boundaryPM25(value) === cnt.PM25_MOD)
+      return modState.txtpiCo
+    else if (cal.boundaryPM25(value) === cnt.PM25_BAD)
+      return badState.txtpiCo
+    else if (cal.boundaryPM25(value) === cnt.PM25_VERY_BAD)
+      return veryBadState.txtpiCo
+    else
+      return emptyState.txtpiCo
   };
 
   useEffect(() => {
@@ -185,6 +192,10 @@ export const ViewAll = ({ navigation }) => {
               <View style={styles.deviceNumberBox}>
                 <View style={veryBadState.indicator}/>
                 <Text style={veryBadState.text}>{VeryBad}</Text>
+              </View>
+              <View style={styles.deviceNumberBox}>
+                <View style={emptyState.indicator}/>
+                <Text style={emptyState.text}>{Empty}</Text>
               </View>
             </View>
           </View>
@@ -579,5 +590,45 @@ const veryBadState = StyleSheet.create({
     fontFamily: 'NotoSans-Regular',
     fontSize: 11,
     color: colors.coral,
+  },
+});
+
+const emptyState = StyleSheet.create({
+  indicator: {
+    margin: 2,
+    width: 8,
+    height: 8,
+    backgroundColor: colors.brownGrey,
+  },
+  text: {
+    margin: 2,
+    fontFamily: 'NotoSans-Bold',
+    fontSize: 16,
+  },
+  bgColor: {
+    width: width * 0.281,
+    height: height * 0.0211,
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 4,
+    backgroundColor: colors.brownGrey,
+    shadowColor: 'rgba(252, 83, 69, 0.2)',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 16,
+    shadowOpacity: 1,
+    elevation: 1,
+  },
+  txtPlaceColor: {
+    textAlign: 'center',
+    fontFamily: 'NotoSans-Bold',
+    fontSize: 13,
+    color: colors.brownishGrey,
+  },
+  txtpiCo: {
+    fontFamily: 'NotoSans-Regular',
+    fontSize: 11,
+    color: colors.brownishGrey,
   },
 });
