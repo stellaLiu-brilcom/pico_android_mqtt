@@ -8,6 +8,7 @@ import { CreateAccount } from './CreateAccount';
 import { SignUp1 } from './SignUp1';
 import { SignUp2 } from './SignUp2';
 import { Scan_SignIn } from './Scan_SignIn';
+import { WebViewScreen } from '../Main/Home/WebView';
 import FindPicoToScan_SignIn from './FindPicoToScan_SignIn';
 import FindPicoToScan_SignIn_Pre from './FindPicoToScan_SignIn_Pre';
 import colors from '../src/colors';
@@ -178,6 +179,13 @@ export const AuthStackScreen = ({ navigation }) => {
                 onPress={() => navigation.navigate('SignIn')}
               />
             ),
+              }}
+            />
+            <AuthStack.Screen
+              name="WebView"
+              component={WebViewScreen}
+              options={{
+                headerShown: false,
               }}
             />
           </AuthStack.Navigator>
