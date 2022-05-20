@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     fontFamily: 'godoRounded R',
     fontSize: 40,
-    lineHeight: 35,
+    lineHeight: 40,
     color: colors.veryLightPink,
   },
   pm25m3: {
@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     fontFamily: 'godoRounded R',
     fontSize: 40,
-    lineHeight: 35,
+    lineHeight: 40,
     color: colors.azure,
   },
   pm10m3: {
@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     fontFamily: 'godoRounded R',
     fontSize: 40,
-    lineHeight: 35,
+    lineHeight: 40,
     color: colors.azure,
   },
   temperatureC: {
@@ -422,7 +422,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     fontFamily: 'godoRounded R',
     fontSize: 40,
-    lineHeight: 35,
+    lineHeight: 40,
     color: colors.azure,
   },
   humidityPercent: {
@@ -451,7 +451,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     fontFamily: 'godoRounded R',
     fontSize: 40,
-    lineHeight: 35,
+    lineHeight: 40,
     color: colors.coral,
   },
   Vocppb: {
@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     fontFamily: 'godoRounded R',
     fontSize: 40,
-    lineHeight: 35,
+    lineHeight: 40,
     color: colors.lightOrange,
   },
   CO2ppm: {
