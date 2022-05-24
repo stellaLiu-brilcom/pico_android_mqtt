@@ -831,8 +831,8 @@ function open_WhatsApp() {
                                     allowFontScaling={false}
                                   >
                                     {tempMod
-                                      ? Math.round((item.stateInfo.temp / 10.0) * 1.8 + 32)
-                                      : Math.round(item.stateInfo.temp / 10.0)}
+                                      ? Math.round((item.stateInfo.temp) * 1.8 + 32)
+                                      : Math.round(item.stateInfo.temp)}
                                   </Text>
                                   <Text
                                     style={styles.picoTempUnit}
@@ -845,7 +845,7 @@ function open_WhatsApp() {
                                     style={styles.picoHumdi}
                                     allowFontScaling={false}
                                   >
-                                    {Math.round(item.stateInfo.humd / 10.0)}
+                                    {Math.round(item.stateInfo.humd)}
                                   </Text>
                                   <Text
                                     style={styles.picoHumdiUnit}
