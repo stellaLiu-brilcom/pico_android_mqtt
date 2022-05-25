@@ -158,7 +158,7 @@ export default {
   wifisetting_3_popup_label_password: 'パスワード',
   wifisetting_3_popup_input_password: 'パスワード',
   wifisetting_3_popup_error_title: '設定に失敗しました。',
-  wifisetting_3_popup_error: '1。 パスワードまたはWi-Fi(2.4GHz)をご確認ください。\n2。 ピコホームの赤紫色ランプを確認するなら、機器のアップデート中です。少々お待ちください。機器の電源が自動的に切られたら、電源を入れてWi-Fiを再設定してください。',
+  wifisetting_3_popup_error: `1。 パスワードまたはWi-Fi(2.4GHz)をご確認ください。\n2。紫色の点灯時はアップデート中です。少々お待ちください。電源が自動的にオフになったあと、電源を入れてWi-Fiを再設定してください。\n3。詳しい内容は 「ヘルプ」は「www.brilcom.com」でご確認下さい。`,
   wifisetting_3_popup_button_ok: '確認',
   wifisetting_4_title: 'ピコホームの設定',
   wifisetting_4_label_name: 'ピコホームの名前',

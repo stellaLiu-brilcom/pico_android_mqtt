@@ -456,7 +456,7 @@ export const ConnectWiFi = ({ navigation }) => {
               <TouchableOpacity style={styles.modalCancel} onPress={() => setSorryModal(false)}>
                 <Image source={require('../../../../Assets/img/icCancel.png')} />
               </TouchableOpacity>
-              <Text style={styles.modalTitle}>{strings.wifisetting_3_popup_error_title}</Text>
+              <Text style={[styles.modalTitle, {textAlign: "center"}]}>{strings.wifisetting_3_popup_error_title}</Text>
               <Text style={styles.modalTitle}>{strings.wifisetting_3_popup_error}</Text>
               <TouchableOpacity
                 style={styles.buttonStyle}
@@ -517,7 +517,11 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalCancel: { position: 'absolute', right: 12, top: 12 },
-  modalTitle: { fontFamily: 'NotoSans-Bold', fontSize: 18, marginBottom: 25 },
+  modalTitle: { 
+    fontFamily: 'NotoSans-Bold', 
+    fontSize: 18, 
+    marginBottom: 25,
+  },
   networkBox: {
     width: width * 0.75,
     flexDirection: 'column',
