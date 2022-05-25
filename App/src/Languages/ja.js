@@ -117,6 +117,7 @@ export default {
   main_popup_pollen_button_ok: '確認',
   main_popup_title: '新しいバージョン',
   main_popup:'ピコホームのアプリに新しいバージョンがあります。アップデートしてください',
+  popup_auto_logout_contents: '他の機器からログアウトする場合は自動的にログアウトされます。 再度ログインして下さい。',
   main_popup_button: 'アップデート',
   location_popup: "<h2 style='color: #0af13e'>Use Location ?</h2>This app wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/>",
   location_popup_ble: "<h2 style='color: #0af13e'>Use Location ?</h2>This app wants to change your device settings for bluetooth permission:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/>",

@@ -118,6 +118,7 @@ export default {
   main_popup_pollen_button_ok: 'OK',
   main_popup_title: 'New Version Released!',
   main_popup:'There is a new version of PiCO HOME. Press the button bellow to update!',
+  popup_auto_logout_contents: 'Your account was logged out due to be logged out from other devices. Please log in again.',
   main_popup_button: 'UPDATE',
   location_popup: "<h2 style='color: #0af13e'>Use Location ?</h2>This app wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/>",
   location_popup_ble: "<h2 style='color: #0af13e'>Use Location ?</h2>This app wants to change your device settings for bluetooth permission:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/>",

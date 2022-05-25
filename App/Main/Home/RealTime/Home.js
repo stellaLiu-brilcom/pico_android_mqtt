@@ -12,6 +12,7 @@ import {
   Linking,
 } from 'react-native';
 import {
+  AuthContext,
   UserContext,
   DeviceAndAirInfoContext,
   TempContext,
@@ -42,6 +43,7 @@ export const Home = ({ navigation }) => {
   const snapShotAndCount = useContext(SnapShotAndCountContext);
   const tempMod = useContext(TempContext);
   const userInfo = useContext(UserContext);
+  const { signOut } = useContext(AuthContext);
   const [connectInfo, setConnectInfo] = useState(false);
 
   const [latitude, setLatitude] = useState(null);
@@ -62,6 +64,7 @@ export const Home = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [pollenExplain, setPollenEx] = useState(false);
   const [isOffLine, setIsOffLine] = useState(false);
+  const [isForcedLogout, setIsForcedLogout] = useState(false);
 
 function open_WhatsApp() {
     Linking.openURL("market://details?id=com.brilcom.bandi.pico");
@@ -236,7 +239,12 @@ function open_WhatsApp() {
       }),
     })
       .then((response) => response.json())
-      .then((res) => setPublicAirInfo(res))
+      .then((res) => {
+        if (res.Status === 'ERROR' && res.Msg === 'err_invalid_api_key')
+          setIsForcedLogout(true)
+        else
+          setPublicAirInfo(res)
+      })
       .catch((error) => {
         console.error(error);
       });
@@ -831,7 +839,7 @@ function open_WhatsApp() {
                                     allowFontScaling={false}
                                   >
                                     {tempMod
-                                      ? Math.round((item.stateInfo.temp) * 1.8 + 32)
+                                      ? Math.round(item.stateInfo.temp * 1.8 + 32)
                                       : Math.round(item.stateInfo.temp)}
                                   </Text>
                                   <Text
@@ -998,6 +1006,19 @@ function open_WhatsApp() {
           <TouchableOpacity onPress={()=>open_WhatsApp()}>
             <View style={[styles.modalButton, { width: width * 0.8 }]}>
               <Text style={styles.modalButtonText}>{strings.main_popup_button}</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
+      <Modal isVisible={isForcedLogout}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalSubTextView}>
+            <Text style={styles.modalSubText}>{strings.popup_auto_logout_contents}</Text>
+          </View>
+          <TouchableOpacity onPress={() => signOut()}>
+            <View style={[styles.modalButton, { width: width * 0.8 }]}>
+              <Text style={styles.modalButtonText}>{strings.popup_button_ok}</Text>
             </View>
           </TouchableOpacity>
         </View>
