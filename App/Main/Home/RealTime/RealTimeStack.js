@@ -58,7 +58,6 @@ export const RealTimeStackScreen = () => {
             'Content-Type': 'application/json',//서버로 보낼 때 무엇으로 보내는 것인지 알려줌
           },
           body: JSON.stringify({
-
             "serialNum" : devices[idx].SerialNum,
             "startTime" : start_time,
             "endTime"   : end_time,
@@ -217,7 +216,7 @@ export const RealTimeStackScreen = () => {
         }
       });
       setRefresh((prev) => !prev);
-    }, 3000);
+    }, 14000);
     return function cleanup() {
       clearInterval(time10);
     };
@@ -264,6 +263,16 @@ export const RealTimeStackScreen = () => {
     setTimeout(() => {
       setIsLoading(true);
     }, 1000);
+
+    setRefresh((prev) => !prev);
+    NetInfo.fetch().then((state) => {
+      console.log("state.isConnected", state.isConnected);
+      if (!state.isConnected) {
+        setIsOnline(false);
+      } else {
+        setIsOnline(true);
+      }
+    });
   }, []);
 
   return (
