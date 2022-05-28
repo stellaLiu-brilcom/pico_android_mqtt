@@ -6,6 +6,7 @@ import { Circle, Polygon, Text, G, Rect } from 'react-native-svg';
 import colors from '../src/colors';
 
 export const ComfortZone = (props) => {
+  const {temp: initialTemp = 0, humd: initialHumd = 0} = props
   const tempMod = useContext(TempContext);
   const Ydata = [0, 20, 40, 60, 80, 100];
   const Xdata = tempMod ? [59, 68, 77, 86, 95] : [15, 20, 25, 30, 35];
@@ -19,9 +20,8 @@ export const ComfortZone = (props) => {
   const xAxisHeight = 50;
 
   const [date, setDate] = useState(new Date());
-  const [temp, setTemp] = useState((Math.round(props.temp / 10.0) - 15) * UCZWidth);
-  const [humd, setHumd] = useState((100 - Math.round(props.humd / 10.0)) * 2);
-
+  const [temp, setTemp] = useState((Math.round(initialTemp / 10.0) - 15) * UCZWidth);
+  const [humd, setHumd] = useState((100 - Math.round(initialHumd / 10.0)) * 2);
   winter =
     winter +
     (4 * UCZWidth + HUCZWidth) +
