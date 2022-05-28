@@ -663,8 +663,9 @@ export const Graph = (props) => {
         <LineChart
           style={{ flex: 1 }}
           data={stateArray}
-          gridMin={0}>
-
+          gridMin={0}
+          contentInset={{ top: 20, bottom: 50 }}
+        >
           <CustomLines />
           <CustomDashedLines/>
           <Grid />
@@ -672,7 +673,7 @@ export const Graph = (props) => {
           <G>
             <Rect
               x={10}
-              y={15}
+              y={5}
               rx={5}
               ry={5}
               width={setMBoxWidth(maxValue)}
@@ -680,7 +681,7 @@ export const Graph = (props) => {
               fill={colors.white}
               stroke={colors.veryLightPink}
             />
-            <Text x={20} y={35} stroke={setDotColorFunction(maxValue)}>
+            <Text x={20} y={25} stroke={setDotColorFunction(maxValue)}>
               Max : {maxValue} {setUnit(props.state)}
             </Text>
           </G>
@@ -688,7 +689,7 @@ export const Graph = (props) => {
           <G>
             <Rect
               x={10}
-              y={295}
+              y={325}
               rx={5}
               ry={5}
               width={setMBoxWidth(minValue)}
@@ -696,7 +697,7 @@ export const Graph = (props) => {
               fill={colors.white}
               stroke={colors.veryLightPink}
             />
-            <Text x={20} y={315} stroke={setDotColorFunction(minValue)}>
+            <Text x={20} y={345} stroke={setDotColorFunction(minValue)}>
               Min : {minValue} {setUnit(props.state)}
             </Text>
           </G>
