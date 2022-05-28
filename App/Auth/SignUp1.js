@@ -21,6 +21,7 @@ export const SignUp1 = ({ navigation }) => {
 
   const [email, setEmail] = useState('');
   const [emailValidate, setEmailValidation] = useState(false);
+  const [emailExist, setEmailExist] = useState(false);
   const [emailAccess, setEmailAccess] = useState(false);
   const [pw, setPw] = useState('');
   const [pwValidate, setPwValidation] = useState(null);
@@ -34,10 +35,17 @@ export const SignUp1 = ({ navigation }) => {
   const [nextStep, setNextStep] = useState(false);
   const [signUpWait, setSignUpWait] = useState(true);
   
-  const signUpGoNext = () => {
-    signUp(email, pw);
-    setIdPw(email, pw);
+  const signUpGoNext = async () => {
     setSignUpWait(false);
+    
+    const {emailExist} = await signUp(email, pw);
+    if (emailExist) {
+      setSignUpWait(true); 
+      setEmailExist(emailExist)
+    } else {
+      setIdPw(email, pw);
+      setSignUpWait(false);
+    }
   };
 
   const validation = (text, type) => {
@@ -50,6 +58,7 @@ export const SignUp1 = ({ navigation }) => {
       } else {
         setEmailAccess(true);
         setEmail(text);
+        setEmailExist(false)
         if (emailEx.test(text)) {
           setEmailValidation(true);
         } else {
@@ -128,11 +137,13 @@ export const SignUp1 = ({ navigation }) => {
             style={[
               styles.fldViewStyle,
               emailAccess ? (emailValidate ? { borderBottomColor: colors.azure } : { borderBottomColor: colors.coral }) : null,
+              emailExist && { borderBottomColor: colors.coral },
             ]}>
             <Text style={styles.emailText}>{strings.signup_label_email}</Text>
             <View style={styles.emailTextInputView}>
               <Image source={require('../../Assets/img/icEmail.png')} />
               <TextInput
+                value={email}
                 style={styles.emailTextInputStyle}
                 onChangeText={(text) => validation(text.trim(), 'email')}
                 placeholder="picohome@brilcom.com"
@@ -146,6 +157,12 @@ export const SignUp1 = ({ navigation }) => {
               </View>
             )
           ) : null}
+          {emailExist && (
+              <View style={{ width: width * 0.8, marginTop: height * 0.01 }}>
+                <Text style={{ color: colors.coral }}>{strings.signup_regist_error_text}</Text>
+              </View>
+            )
+          }
           <View
             style={[
               styles.fldViewStyle,
@@ -155,6 +172,7 @@ export const SignUp1 = ({ navigation }) => {
             <View style={styles.passWordTextInputView}>
               <Image source={require('../../Assets/img/icLock.png')} />
               <TextInput
+                value={pw}
                 style={styles.passWordTextInputStyle}
                 onChangeText={(text) => validation(text.trim(), 'pw')}
                 placeholder={strings.signup_input_password}
@@ -187,6 +205,7 @@ export const SignUp1 = ({ navigation }) => {
             <View style={styles.rePassWordTextInputView}>
               <Image source={require('../../Assets/img/icLock.png')} />
               <TextInput
+                value={pw2}
                 style={styles.rePassWordTextInputStyle}
                 onChangeText={(text) => setPw2(text.trim())}
                 placeholder={strings.signup_input_reenterpassword}

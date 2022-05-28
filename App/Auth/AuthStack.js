@@ -27,7 +27,7 @@ export const AuthStackScreen = ({ navigation }) => {
       },
       signUp: async (id, pw) => {
         try {
-          let response = await fetch('https://us-central1-pico-home.cloudfunctions.net/SignUp', {
+          let response = await fetch('https://us-central1-project-test-6bf17.cloudfunctions.net/SignUp', {
             method: 'POST',
             headers: {
               Accept: 'application/json',
@@ -39,10 +39,10 @@ export const AuthStackScreen = ({ navigation }) => {
             }),
           });
           let post = await response.json();
-          if (post.Msg === 'success' || post.Msg === 'User id is aleady existed.') {
+          if (post.Msg === 'success') {
             navigation.navigate('CreateAccount');
-          } else {
-            //console.log(post.Msg);
+          } else if (post.Msg === 'User id is aleady existed.'){
+            return { emailExist: true }
           }
         } catch (err) {
           //console.error(err);
