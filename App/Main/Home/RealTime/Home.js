@@ -21,6 +21,7 @@ import {
   DeviceContext,
   OnlineContext,
 } from '../../../context';
+import useCheckFirmwareVersion from '../../../src/Hooks/useCheckFirmwareVersion';
 import LinearGradient from 'react-native-linear-gradient';
 import BitSwiper from 'react-native-bit-swiper';
 import Geolocation from '@react-native-community/geolocation';
@@ -63,9 +64,28 @@ export const Home = ({ navigation }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [pollenExplain, setPollenEx] = useState(false);
+  const [isFirmwareUpdate, setIsFirmwareUpdate] = useState(false);
   const [isOffLine, setIsOffLine] = useState(false);
   const [isForcedLogout, setIsForcedLogout] = useState(false);
 
+  const [getLatestFirmwareVersion, getDeviceFirmwareVersion] = useCheckFirmwareVersion()
+
+  const compareFirmwareVersion = async (id) => {
+    const latestVersion = await getLatestFirmwareVersion(id)
+    const verson = await getDeviceFirmwareVersion(id)
+
+    return ((latestVersion > verson) || (latestVersion < verson))
+  }
+  const isShowFirmwareUpdate = async () => {
+    let isLatestVersion = false
+
+    await Promise.all(devices.map(async (_, id) => {
+      isLatestVersion = await compareFirmwareVersion(id)
+    }))
+    
+    setIsFirmwareUpdate(!isLatestVersion)
+  }
+  
 function open_WhatsApp() {
     Linking.openURL("market://details?id=com.brilcom.bandi.pico");
   }
@@ -310,6 +330,7 @@ function open_WhatsApp() {
   // 현재 위치의 위도(latitude), 경도(longitude)값 설정
   // 현재 위치의 위,경도를 기준으로 Temperature/Humid/Ozone 설정
   useEffect(() => {
+    isShowFirmwareUpdate()
 
     Geolocation.getCurrentPosition((success)=>{
       setLongitude(success.coords.longitude);
@@ -1011,6 +1032,27 @@ function open_WhatsApp() {
         </View>
       </Modal>
 
+      <Modal isVisible={isFirmwareUpdate} onBackdropPress={() => setIsFirmwareUpdate(false)}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalCancel}>
+            <TouchableOpacity onPress={() => setIsFirmwareUpdate(false)}>
+              <Image source={require('../../../../Assets/img/icCancel.png')} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.modalHeaderTextView}>
+            <Text style={styles.modalHeaderText}>{strings.popup_firmwareupdate_title}</Text>
+          </View>
+          <View style={styles.modalSubTextView}>
+            <Text style={styles.modalSubTextNotCenter}>{strings.popup_firmwareupdate_contents}</Text>
+          </View>
+          <TouchableOpacity onPress={() => setIsFirmwareUpdate(false)}>
+            <View style={[styles.modalButton, { width: width * 0.8 }]}>
+              <Text style={styles.modalButtonText}>{strings.main_popup_pollen_button_ok}</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
       <Modal isVisible={isForcedLogout}>
         <View style={styles.modalContainer}>
           <View style={styles.modalSubTextView}>
@@ -1517,6 +1559,11 @@ const styles = StyleSheet.create({
     fontFamily: 'NotoSans-Regular',
     fontSize: 14,
     color: colors.brownGrey,
+  },
+  modalSubTextNotCenter: {
+    fontFamily: 'NotoSans-Regular',
+    fontSize: 14,
+    color: colors.black,
   },
   modalButton: {
     width: width * 0.3875,
