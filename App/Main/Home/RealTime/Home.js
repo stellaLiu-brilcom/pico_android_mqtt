@@ -77,7 +77,7 @@ export const Home = ({ navigation }) => {
     return ((latestVersion > verson) || (latestVersion < verson))
   }
   const isShowFirmwareUpdate = async () => {
-    let isLatestVersion = false
+    let isLatestVersion = true
 
     await Promise.all(devices.map(async (_, id) => {
       isLatestVersion = await compareFirmwareVersion(id)
@@ -1562,8 +1562,8 @@ const styles = StyleSheet.create({
   },
   modalSubTextNotCenter: {
     fontFamily: 'NotoSans-Regular',
-    fontSize: 14,
-    color: colors.black,
+    fontSize: 13,
+    color: colors.brownGrey,
   },
   modalButton: {
     width: width * 0.3875,

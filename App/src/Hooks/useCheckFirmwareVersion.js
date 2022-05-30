@@ -28,7 +28,7 @@ const useCheckFirmwareVersion = () => {
     }
 
     const getDeviceFirmwareVersion = async (id) => {
-        await getDeviceState()
+        await getDeviceState(userInfo.userid, userInfo.apiKey)
         return parseFloat(device[id].FirmwareVersion) 
     }
 

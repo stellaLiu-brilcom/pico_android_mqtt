@@ -26,7 +26,9 @@ export const DeviceSetting = ({ navigation }) => {
 
   }); 
 
-
+  useEffect(() => {
+    checkFirmwareUpdate()
+  }, [])
 
   // 디바이스 등록 삭제
   const removeDeviceAndEscape = () => {
@@ -70,10 +72,6 @@ export const DeviceSetting = ({ navigation }) => {
     setIsLatestVersion((latestVersion > verson) || (latestVersion < verson))
     setIsLoading(true)
   }
-
-  useEffect(() => {
-    checkFirmwareUpdate()
-  }, [])
 
   return (
     <View style={styles.container}>
@@ -177,7 +175,7 @@ export const DeviceSetting = ({ navigation }) => {
               </TouchableOpacity>
             </View>
           </Modal>
-          
+
           {/* latestVersion ? (
             <View style={styles.latestVersionView}>
               <View style={styles.latestVersionStyle}>
@@ -288,6 +286,11 @@ const styles = StyleSheet.create({
     marginTop: height * 0.0281,
   },
   modalSubText: { textAlign: 'center', fontFamily: 'NotoSans-Regular', fontSize: 16, color: colors.brownGrey },
+  modalSubTextNotCenter: {
+    fontFamily: 'NotoSans-Regular',
+    fontSize: 13,
+    color: colors.brownGrey,
+  },
   modalButton: {
     width: width * 0.3875,
     height: height * 0.0704,
