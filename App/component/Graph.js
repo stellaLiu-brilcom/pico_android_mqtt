@@ -146,7 +146,7 @@ export const Graph = (props) => {
     const day = parseInt(leadingZeros(d, 2));
 
     const new_date_start = new Date();
-    new_date_start.setFullYear(year, month - 1, day);
+    new_date_start.setUTCFullYear(year, month - 1, day);
     new_date_start.setUTCHours(0);
     new_date_start.setUTCMinutes(0);
     new_date_start.setUTCSeconds(0);
@@ -155,9 +155,8 @@ export const Graph = (props) => {
 
     let s1 = new_date_start.toISOString()
     s1= s1.substring(0,4)+s1.substring(5,7)+s1.substring(8,10)+s1.substring(11,13)+s1.substring(14,16)+s1.substring(17,19);
-
     const new_date_end = new Date();
-    new_date_end.setFullYear(year, month - 1, new_date_start.getUTCDate());
+    new_date_end.setUTCFullYear(year, month - 1, new_date_start.getUTCDate());
     new_date_end.setUTCHours(23);
     new_date_end.setUTCMinutes(59);
     new_date_end.setUTCSeconds(0);
@@ -210,7 +209,7 @@ export const Graph = (props) => {
     const day = parseInt(leadingZeros(d, 2));
 
     const new_date_start = new Date();
-    new_date_start.setFullYear(year, month - 1, day);
+    new_date_start.setUTCFullYear(year, month - 1, day);
     new_date_start.setUTCHours(23);
     new_date_start.setUTCMinutes(59);
     new_date_start.setUTCSeconds(0);
@@ -222,7 +221,7 @@ export const Graph = (props) => {
     s1= s1.substring(0,4)+s1.substring(5,7)+s1.substring(8,10)+s1.substring(11,13)+s1.substring(14,16)+s1.substring(17,19);
 
     const new_date_end = new Date();
-    new_date_end.setFullYear(year, month - 1, new_date_start.getUTCDate());
+    new_date_end.setUTCFullYear(year, month - 1, new_date_start.getUTCDate());
     new_date_end.setUTCHours(0);
     new_date_end.setUTCMinutes(0);
     new_date_end.setUTCSeconds(0);
