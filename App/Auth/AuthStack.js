@@ -19,7 +19,7 @@ export const AuthStackScreen = ({ navigation }) => {
   const [id, setId] = useState('');
   const [pw, setPw] = useState('');
 
-  const signUpContext = useMemo(() => {
+const signUpContext = useMemo(() => {
     return {
       setIdPw: (id, pw) => {
         setId(id);
@@ -41,11 +41,12 @@ export const AuthStackScreen = ({ navigation }) => {
           let post = await response.json();
           if (post.Msg === 'success') {
             navigation.navigate('CreateAccount');
+            return { emailExist: false }
           } else if (post.Msg === 'User id is aleady existed.'){
             return { emailExist: true }
           }
         } catch (err) {
-          //console.error(err);
+          console.error("SignUp", err);
         }
       },
     };
