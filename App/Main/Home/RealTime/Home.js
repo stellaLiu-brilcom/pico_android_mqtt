@@ -1342,7 +1342,7 @@ const styles = StyleSheet.create({
   picoDeviceSetting: {
     position: 'absolute',
     top: 80,
-    right: 35,
+    right: 5,
   },
   picoName: {
     textAlign: 'center',
