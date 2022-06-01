@@ -836,6 +836,19 @@ function open_WhatsApp() {
                                 imageStyle={{resizeMode: 'stretch'}}
                               >
                                 <Image source={getPicoHomeSource(item.stateInfo.pm25)} style={{ width: 72, height: 72 }} />
+                                <View style={styles.picoDeviceSetting}>
+                                  <TouchableOpacity
+                                    onPress={() =>
+                                      navigation.navigate('DeviceStack', {
+                                        id: item.Id,
+                                        mod: 'setting',
+                                        temp: 0,
+                                        humd: 0,
+                                      })
+                                    }>
+                                    <Image source={require('../../../../Assets/img/icSettingsWhite.png')} />
+                                  </TouchableOpacity>
+                                </View>
                                 <Text
                                   style={styles.picoName}
                                   allowFontScaling={false}
@@ -1325,6 +1338,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'NotoSans-Regular',
     fontSize: 30,
+  },
+  picoDeviceSetting: {
+    position: 'absolute',
+    top: 80,
+    right: 35,
   },
   picoName: {
     textAlign: 'center',
