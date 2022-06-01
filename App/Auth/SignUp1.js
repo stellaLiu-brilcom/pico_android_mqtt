@@ -57,7 +57,6 @@ export const SignUp1 = ({ navigation }) => {
         setEmailAccess(false);
       } else {
         setEmailAccess(true);
-        setEmail(text);
         setEmailExist(false)
         if (emailEx.test(text)) {
           setEmailValidation(true);
@@ -65,6 +64,7 @@ export const SignUp1 = ({ navigation }) => {
           setEmailValidation(false);
         }
       }
+      setEmail(text);
     } else if (type === 'pw') {
       if (text === '') {
         setPwAccess(false);
@@ -77,6 +77,7 @@ export const SignUp1 = ({ navigation }) => {
           setPwValidation(false);
         }
       }
+      setPw(text);
     }
   };
 
