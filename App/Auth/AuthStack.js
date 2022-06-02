@@ -27,7 +27,7 @@ const signUpContext = useMemo(() => {
       },
       signUp: async (id, pw) => {
         try {
-          let response = await fetch('https://us-central1-project-test-6bf17.cloudfunctions.net/SignUp', {
+          let response = await fetch('https://us-central1-pico-home.cloudfunctions.net/SignUp', {
             method: 'POST',
             headers: {
               Accept: 'application/json',

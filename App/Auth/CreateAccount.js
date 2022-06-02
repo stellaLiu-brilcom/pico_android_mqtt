@@ -82,7 +82,7 @@ export const CreateAccount = ({ navigation }) => {
 
   const sendEmailVerification = (userid, apiKey) => {
     setSendEmailModal(true);
-    fetch('https://us-central1-project-test-6bf17.cloudfunctions.net/SendEmailAuth', {
+    fetch('https://us-central1-pico-home.cloudfunctions.net/SendEmailAuth', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
