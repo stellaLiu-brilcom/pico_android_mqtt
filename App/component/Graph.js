@@ -663,6 +663,8 @@ export const Graph = (props) => {
           style={{ flex: 1 }}
           data={stateArray}
           gridMin={0}
+          yMin={minValue - 150}
+          yMax={maxValue + 100}
           contentInset={{ top: 20, bottom: 50 }}
         >
           <CustomLines />
@@ -688,7 +690,7 @@ export const Graph = (props) => {
           <G>
             <Rect
               x={10}
-              y={325}
+              y={315}
               rx={5}
               ry={5}
               width={setMBoxWidth(minValue)}
@@ -696,7 +698,7 @@ export const Graph = (props) => {
               fill={colors.white}
               stroke={colors.veryLightPink}
             />
-            <Text x={20} y={345} stroke={setDotColorFunction(minValue)}>
+            <Text x={20} y={335} stroke={setDotColorFunction(minValue)}>
               Min : {minValue} {setUnit(props.state)}
             </Text>
           </G>
