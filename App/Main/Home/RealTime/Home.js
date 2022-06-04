@@ -441,7 +441,7 @@ function open_WhatsApp() {
         .then((res) => {
           //console.log(res);
          // console.log(res.version);
-        if(res.version != "3.0.14"){
+        if(res.version != "3.0.15"){
           //console.log("different version");
           setConnectInfo(true);
         }else{

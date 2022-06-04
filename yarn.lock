@@ -901,7 +901,6 @@
     "jest-resolve" "^26.2.2"
     "jest-util" "^26.2.0"
     "jest-worker" "^26.2.1"
-    "node-notifier" "^7.0.0"
     "slash" "^3.0.0"
     "source-map" "^0.6.0"
     "string-length" "^4.0.1"
@@ -1140,7 +1139,6 @@
   "version" "2.6.1"
   dependencies:
     "invariant" "^2.2.4"
-    "react-native-windows" "^0.62.0-0"
   optionalDependencies:
     "react-native-windows" "^0.62.0-0"
 
@@ -2162,7 +2160,7 @@
     "ieee754" "^1.1.4"
     "isarray" "^1.0.0"
 
-"buffer@^5.0.0", "buffer@^5.4.0", "buffer@5.6.0":
+"buffer@^5.0.0", "buffer@5.6.0":
   "integrity" "sha512-/gDYp/UtU0eA1ys8bOs9J6a+E/KWIY+DZ+Q2WESNUA0jFRsJOc0SNUO6xJ5SGA1xueg3NL65W6s+NY5l9cunuw=="
   "resolved" "https://registry.npmjs.org/buffer/-/buffer-5.6.0.tgz"
   "version" "5.6.0"
@@ -3160,7 +3158,6 @@
     "estraverse" "^4.2.0"
     "esutils" "^2.0.2"
     "optionator" "^0.8.1"
-    "source-map" "~0.6.1"
   optionalDependencies:
     "source-map" "~0.6.1"
 
@@ -4574,7 +4571,6 @@
     "@jest/types" "^24.9.0"
     "anymatch" "^2.0.0"
     "fb-watchman" "^2.0.0"
-    "fsevents" "^1.2.7"
     "graceful-fs" "^4.1.15"
     "invariant" "^2.2.4"
     "jest-serializer" "^24.9.0"
@@ -4596,7 +4592,6 @@
     "@types/node" "*"
     "anymatch" "^3.0.3"
     "fb-watchman" "^2.0.0"
-    "fsevents" "^2.1.2"
     "graceful-fs" "^4.2.4"
     "jest-regex-util" "^26.0.0"
     "jest-serializer" "^26.2.0"
@@ -6653,11 +6648,6 @@
   "resolved" "https://registry.npmjs.org/querystring/-/querystring-0.2.0.tgz"
   "version" "0.2.0"
 
-"random-id@^1.0.3":
-  "integrity" "sha512-78QU7sgk2uUsXDu5B/CV8R2ee6yAWDhJxvYPCLNXDD2EIdjb7vOLNXEm4S6//s++u4hAkH7umdq+usngpcTSeA=="
-  "resolved" "https://registry.npmjs.org/random-id/-/random-id-1.0.4.tgz"
-  "version" "1.0.4"
-
 "randombytes@^2.0.0", "randombytes@^2.0.1", "randombytes@^2.0.3", "randombytes@^2.0.5":
   "integrity" "sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ=="
   "resolved" "https://registry.npmjs.org/randombytes/-/randombytes-2.1.0.tgz"
@@ -6677,13 +6667,6 @@
   "integrity" "sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg=="
   "resolved" "https://registry.npmjs.org/range-parser/-/range-parser-1.2.1.tgz"
   "version" "1.2.1"
-
-"react_native_mqtt@1.3.1":
-  "integrity" "sha512-G7xlNwNvvbm+kGRuJUDeK2ij7SlHt2K06bJ56WyxOyMKiHccmm+cCT/PhoJaY6OtYXC3Mq17oGQVHSpu6mQeMQ=="
-  "resolved" "https://registry.npmjs.org/react_native_mqtt/-/react_native_mqtt-1.3.1.tgz"
-  "version" "1.3.1"
-  dependencies:
-    "react-native-storage" "^0.1.2"
 
 "react-devtools-core@^4.6.0":
   "integrity" "sha512-3Lv3nI8FPAwKqUco35oOlgf+4j8mgYNnIcDv2QTfxEqg2G69q17ZJ8ScU9aBnymS28YC1OW+kTxLmdIQeTN8yg=="
@@ -6734,10 +6717,10 @@
   "resolved" "https://registry.npmjs.org/react-native-ble-manager/-/react-native-ble-manager-7.3.1.tgz"
   "version" "7.3.1"
 
-"react-native-ble-plx@^2.0.1":
-  "integrity" "sha512-dd4IubwGu6CZoDMrZoSUb0zGmb/bSOXkB+5sYxKhaHANjem/9yPx6mifaLM13M+DJ6P+PNoLn0bPKItTYzsZiA=="
-  "resolved" "https://registry.npmjs.org/react-native-ble-plx/-/react-native-ble-plx-2.0.1.tgz"
-  "version" "2.0.1"
+"react-native-ble-plx@^2.0.3":
+  "integrity" "sha512-62LRDBPf/03K7sge+qq2ZuF8PWCGB782G+SBrpgNm5fA5Hs3FCY1ExTJZ1G0tB5ZhBPYEXcKRxPLuFegcDFrqA=="
+  "resolved" "https://registry.npmjs.org/react-native-ble-plx/-/react-native-ble-plx-2.0.3.tgz"
+  "version" "2.0.3"
 
 "react-native-chart-kit@6.6.1":
   "integrity" "sha512-aYPqKW37CxOVnP6jWq+I7mQ4AWJ6kDvD2InMI143ShQCmOmWGMbykIgFZ3xs8KFCgQx8YUaPgnvayH9zuOP07Q=="
@@ -6827,15 +6810,6 @@
     "prop-types" "^15.6.2"
     "react-native-animatable" "1.3.3"
 
-"react-native-native-mqtt@0.1.8":
-  "integrity" "sha512-Bjxq5XPL2WeuoSCglL+PMHejNN6Cu4+9tVUN7W7TY7hUPAyHkUofw2yOnvW8LfYuzVI3HWI0fo/r/84Ql37T3A=="
-  "resolved" "https://registry.npmjs.org/react-native-native-mqtt/-/react-native-native-mqtt-0.1.8.tgz"
-  "version" "0.1.8"
-  dependencies:
-    "buffer" "^5.4.0"
-    "random-id" "^1.0.3"
-    "tiny-emitter" "^2.1.0"
-
 "react-native-os@1.2.6":
   "integrity" "sha512-OlT+xQAcvkcnf7imgXiu+myMkqDt4xw2bP5SlVo19hEn5XHBkPMLX7dk3sSGxxncH/ToMDsf1KLyrPabNVtadA=="
   "resolved" "https://registry.npmjs.org/react-native-os/-/react-native-os-1.2.6.tgz"
@@ -6865,11 +6839,6 @@
   "integrity" "sha512-5MaiUD6HA3nzY3JbVI8l3V7pKedtxQF3d8qktTVI0WmWXTI4QzqOU8r8fPVvfKo3MhOXwhWBjr+kQ7DZaIQQeg=="
   "resolved" "https://registry.npmjs.org/react-native-screens/-/react-native-screens-2.9.0.tgz"
   "version" "2.9.0"
-
-"react-native-storage@^0.1.2":
-  "integrity" "sha1-kdd1YOQcyeYtWHtVohs9brq6VZk="
-  "resolved" "https://registry.npmjs.org/react-native-storage/-/react-native-storage-0.1.5.tgz"
-  "version" "0.1.5"
 
 "react-native-svg-charts@5.4.0":
   "integrity" "sha512-5TaIGSihJaHCGFj32Tc07hZrqqTpvdyAx89PIrW2nLf2tijd61+3UE3jtsiHOvfeAyDgSTWjv6s9qG9d2di7Pw=="
@@ -8104,11 +8073,6 @@
   "version" "1.4.2"
   dependencies:
     "process" "~0.11.0"
-
-"tiny-emitter@^2.1.0":
-  "integrity" "sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q=="
-  "resolved" "https://registry.npmjs.org/tiny-emitter/-/tiny-emitter-2.1.0.tgz"
-  "version" "2.1.0"
 
 "tiny-queue@0.2.0":
   "integrity" "sha1-xJ/LXIdVW+G0pd9+uHEB1beLydw="

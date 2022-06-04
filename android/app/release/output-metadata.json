@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.brilcom.bandi.pico",
+  "variantName": "release",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "versionCode": 31457315,
+      "versionName": "3.0.15",
+      "outputFile": "app-release.apk"
+    }
+  ]
+}
