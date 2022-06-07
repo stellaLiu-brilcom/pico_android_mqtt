@@ -9,16 +9,10 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   NativeModules,
-  Platform,
-  PermissionsAndroid,
   Linking,
-  Button
 } from 'react-native';
-
-import {moment} from 'moment-timezone';
-
-
 import {
+  AuthContext,
   UserContext,
   DeviceAndAirInfoContext,
   TempContext,
@@ -27,17 +21,15 @@ import {
   DeviceContext,
   OnlineContext,
 } from '../../../context';
-// import fontFamily from '../../../src/fontFamily';
+import useCheckFirmwareVersion from '../../../src/Hooks/useCheckFirmwareVersion';
 import LinearGradient from 'react-native-linear-gradient';
 import BitSwiper from 'react-native-bit-swiper';
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
 import Modal from 'react-native-modal';
-import * as Mqtt from 'react-native-native-mqtt';
-import AsyncStorage from '@react-native-community/async-storage';
 import colors from '../../../src/colors';
-import { start } from 'react-native-ble-manager';
-
+import cal from '../../../src/calculate';
+import cnt from '../../../src/constant';
 
 export const Home = ({ navigation }) => {
   const strings = useContext(LanguageContext);
@@ -52,6 +44,7 @@ export const Home = ({ navigation }) => {
   const snapShotAndCount = useContext(SnapShotAndCountContext);
   const tempMod = useContext(TempContext);
   const userInfo = useContext(UserContext);
+  const { signOut } = useContext(AuthContext);
   const [connectInfo, setConnectInfo] = useState(false);
 
   const [latitude, setLatitude] = useState(null);
@@ -71,12 +64,29 @@ export const Home = ({ navigation }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [pollenExplain, setPollenEx] = useState(false);
+  const [isFirmwareUpdate, setIsFirmwareUpdate] = useState(false);
   const [isOffLine, setIsOffLine] = useState(false);
+  const [isForcedLogout, setIsForcedLogout] = useState(false);
 
+  const [getLatestFirmwareVersion, getDeviceFirmwareVersion] = useCheckFirmwareVersion()
+
+  const compareFirmwareVersion = async (id) => {
+    const latestVersion = await getLatestFirmwareVersion(id)
+    const verson = await getDeviceFirmwareVersion(id)
+
+    return ((latestVersion > verson) || (latestVersion < verson))
+  }
+  const isShowFirmwareUpdate = async () => {
+    let isLatestVersion = true
+
+    await Promise.all(devices.map(async (_, id) => {
+      isLatestVersion = await compareFirmwareVersion(id)
+    }))
+    
+    setIsFirmwareUpdate(!isLatestVersion)
+  }
   
-
 function open_WhatsApp() {
- 
     Linking.openURL("market://details?id=com.brilcom.bandi.pico");
   }
 
@@ -129,55 +139,51 @@ function open_WhatsApp() {
    */
 
   // Background color값 반환
-  const getBackgroundState = (props) => {
-    if (0 <= props && props <= 15) {
+  const getBackgroundState = value => {
+    if (cal.boundaryPM25(value) === cnt.PM25_GOOD)
       return 'rgba(0, 172, 255, 0.3)';
-    } else if (16 <= props && props <= 35) {
+    else if (cal.boundaryPM25(value) === cnt.PM25_MOD)
       return 'rgba(121, 191, 0, 0.3)';
-    } else if (36 <= props && props <= 75) {
+    else if (cal.boundaryPM25(value) === cnt.PM25_BAD)
       return 'rgba(255, 160, 64, 0.3)';
-    } else {
+    else if (cal.boundaryPM25(value) === cnt.PM25_VERY_BAD)
       return 'rgba(252, 83, 69, 0.3)';
-    }
   };
 
   // Background Layer1의 color에 해당하는 이미지 반환
-  const getBackWaveLayerState1 = (props) => {
-    if (0 <= props && props <= 15) {
+  const getBackWaveLayerState1 = value => {
+    if (cal.boundaryPM25(value) === cnt.PM25_GOOD)
       return require('../../../../Assets/img/waveLayerGood1.png');
-    } else if (16 <= props && props <= 35) {
+    else if (cal.boundaryPM25(value) === cnt.PM25_MOD)
       return require('../../../../Assets/img/waveLayerModerate1.png');
-    } else if (36 <= props && props <= 75) {
+    else if (cal.boundaryPM25(value) === cnt.PM25_BAD)
       return require('../../../../Assets/img/waveLayerBad1.png');
-    } else {
+    else if (cal.boundaryPM25(value) === cnt.PM25_VERY_BAD)
       return require('../../../../Assets/img/waveLayerVeryBad1.png');
-    }
   };
 
   // Background Layer2의 color에 해당하는 이미지 반환
-  const getBackWaveLayerState2 = (props) => {
-    if (0 <= props && props <= 15) {
+  const getBackWaveLayerState2 = value => {
+    if (cal.boundaryPM25(value) === cnt.PM25_GOOD)
       return require('../../../../Assets/img/waveLayerGood2.png');
-    } else if (16 <= props && props <= 35) {
+    else if (cal.boundaryPM25(value) === cnt.PM25_MOD)
       return require('../../../../Assets/img/waveLayerModerate2.png');
-    } else if (36 <= props && props <= 75) {
+    else if (cal.boundaryPM25(value) === cnt.PM25_BAD)
       return require('../../../../Assets/img/waveLayerBad2.png');
-    } else {
+    else if (cal.boundaryPM25(value) === cnt.PM25_VERY_BAD)
       return require('../../../../Assets/img/waveLayerVeryBad2.png');
-    }
-  };
+  }
 
   // public Pm25의 color값 반환
-  const getPublicPm25TextColor = (props) => {
-    if (0 <= props && props <= 15) {
+  const getPublicPm25TextColor = value => {
+    if (cal.boundaryPM25(value) === cnt.PM25_GOOD)
       return { color: colors.azure };
-    } else if (16 <= props && props <= 35) {
+    else if (cal.boundaryPM25(value) === cnt.PM25_MOD)
       return { color: colors.darkLimeGreen };
-    } else if (36 <= props && props <= 75) {
+    else if (cal.boundaryPM25(value) === cnt.PM25_BAD)
       return { color: colors.lightOrange };
-    } else {
+    else if (cal.boundaryPM25(value) === cnt.PM25_VERY_BAD)
       return { color: colors.coral };
-    }
   };
 
   // public Pm10의 color값 반환
@@ -253,49 +259,51 @@ function open_WhatsApp() {
       }),
     })
       .then((response) => response.json())
-      .then((res) => setPublicAirInfo(res))
+      .then((res) => {
+        if (res.Status === 'ERROR' && res.Msg === 'err_invalid_api_key')
+          setIsForcedLogout(true)
+        else
+          setPublicAirInfo(res)
+      })
       .catch((error) => {
         console.error(error);
       });
   }
 
   // Device의 Pm25 측정 값 상태 반환
-  const getHomeState = (props) => {
-    if (0 <= props && props <= 15) {
+  const getHomeState = value => {
+    if (cal.boundaryPM25(value) === cnt.PM25_GOOD)
       return strings.main_state_good;
-    } else if (16 <= props && props <= 35) {
+    else if (cal.boundaryPM25(value) === cnt.PM25_MOD)
       return strings.main_state_moderate;
-    } else if (36 <= props && props <= 75) {
+    else if (cal.boundaryPM25(value) === cnt.PM25_BAD)
       return strings.main_state_poor;
-    } else {
+    else if (cal.boundaryPM25(value) === cnt.PM25_VERY_BAD)
       return strings.main_state_verypoor;
-    }
   };
 
   // Device의 Pm25 측정 값에 해당하는 Device Background 이미지 반환
-  const getHomeSource = (props) => {
-    if (0 <= props && props <= 15) {
+  const getHomeSource = value => {
+    if (cal.boundaryPM25(value) === cnt.PM25_GOOD)
       return require('../../../../Assets/img/imgHouseBlue.png');
-    } else if (16 <= props && props <= 35) {
+    else if (cal.boundaryPM25(value) === cnt.PM25_MOD)
       return require('../../../../Assets/img/imgHouseGreen.png');
-    } else if (36 <= props && props <= 75) {
+    else if (cal.boundaryPM25(value) === cnt.PM25_BAD)
       return require('../../../../Assets/img/imgHouseOrange.png');
-    } else {
+    else if (cal.boundaryPM25(value) === cnt.PM25_VERY_BAD)
       return require('../../../../Assets/img/imgHouseRed.png');
-    }
   };
 
   // Device의 Pm25 측정 값에 해당하는 Picohome 이미지 반환
-  const getPicoHomeSource = (props) => {
-    if (0 <= props && props <= 15) {
+  const getPicoHomeSource = value => {
+    if (cal.boundaryPM25(value) === cnt.PM25_GOOD)
       return require('../../../../Assets/img/imgPicohomeGood.png');
-    } else if (16 <= props && props <= 35) {
+    else if (cal.boundaryPM25(value) === cnt.PM25_MOD)
       return require('../../../../Assets/img/imgPicohomeModerate.png');
-    } else if (36 <= props && props <= 75) {
+    else if (cal.boundaryPM25(value) === cnt.PM25_BAD)
       return require('../../../../Assets/img/imgPicohomeBad.png');
-    } else {
+    else if (cal.boundaryPM25(value) === cnt.PM25_VERY_BAD)
       return require('../../../../Assets/img/imgPicohomeVerybad.png');
-    }
   };
   /*
   useEffect(async() =>{
@@ -318,10 +326,11 @@ function open_WhatsApp() {
     }
 },[]);
 */
-  
+
   // 현재 위치의 위도(latitude), 경도(longitude)값 설정
   // 현재 위치의 위,경도를 기준으로 Temperature/Humid/Ozone 설정
   useEffect(() => {
+    isShowFirmwareUpdate()
 
     Geolocation.getCurrentPosition((success)=>{
       setLongitude(success.coords.longitude);
@@ -369,19 +378,15 @@ function open_WhatsApp() {
   //       '&unit_system=si&fields=pm25%2Cpm10%2Co3%2Cpollen_tree%2Cpollen_weed&apikey=RHjOKa3an7WYAniMUD26L7Nkelc2ymkQ';
   //     fetch(url)
   //       .then((response) => response.json())
-  //       .then((responseJson) => 
+  //       .then((responseJson) =>
   //       {
-         
 
-          
   //         console.log(url);
   //         console.log(responseJson);
 
   //         setPublicStateInfo(responseJson)});
   //   }
   // }, [addressName]);
-
-
 
   useEffect(() => {
     if (latitude != null && longitude != null) {
@@ -393,20 +398,14 @@ function open_WhatsApp() {
         '&fields=particulateMatter25,particulateMatter10,pollutantO3,treeIndex,weedIndex&timesteps=current&units=metric&apikey=pyZzjTuiJMvG8VZSfF9PqPxXXPlizgo5';
       fetch(url)
         .then((response) => response.json())
-        .then((responseJson) => 
+        .then((responseJson) =>
         {
-         
-
-          
           //console.log(url);
           // console.log(responseJson.data.timelines[0].intervals[0].values);
 
           setPublicStateInfo(responseJson)});
     }
   }, [addressName]);
-
-
-
 
   // PublicStateInfo가 설정되면
   // 내부의 Pm25/Pm10/Ozone값을 각각 설정
@@ -427,10 +426,6 @@ function open_WhatsApp() {
 
   }, [publicStateInfo]);
 
-  
-
-
-
   useEffect(() => {
 
     try {
@@ -440,18 +435,13 @@ function open_WhatsApp() {
           Accept: 'application/json',
           'Content-Type': 'application/json',//서버로 보낼 때 무엇으로 보내는 것인지 알려줌
         },
-        body: JSON.stringify({
-
-
-        }),
+        body: JSON.stringify({}),
       })
         .then((response) => response.json())
         .then((res) => {
-
           //console.log(res);
          // console.log(res.version);
-
-        if(res.version != "3.0.14"){
+        if(res.version != "3.0.15"){
           //console.log("different version");
           setConnectInfo(true);
         }else{
@@ -459,21 +449,16 @@ function open_WhatsApp() {
         }
        });
     } catch (exception) {
-      console.log('ERROR :: ', exception);
+      console.log('ERROR :: ', 'web.app/version', exception);
     }
+  }, []);
 
-
-    
-  }, []); 
-  
-  
   useEffect(() => {
     let timerID = setInterval(() => tick(), 1000);
     return function cleanup() {
       clearInterval(timerID);
     };
-  }); 
-  
+  });
 
   useEffect(() => {
     setTimeout(() => {
@@ -481,17 +466,13 @@ function open_WhatsApp() {
     }, 2000);
   }, []);
 
-
-
-
-
   return (
     <View style={styles.container}>
       {isLoading ? (
         <View style={{ alignItems: 'center' }}>
           <LinearGradient
             colors={[getBackgroundState(parseInt(publicPm25)), 'transparent']}
-            style={styles.linearGradientStyle}></LinearGradient>
+            style={styles.linearGradientStyle}/>
           <View style={{ position: 'absolute' }}>
             <Image style={{ width: width, height: height * 0.1 }} source={getBackWaveLayerState1(parseInt(publicPm25))} />
           </View>
@@ -516,75 +497,189 @@ function open_WhatsApp() {
           <View style={styles.locationInfoStyle}>
             <View style={styles.locationDateTime}>
               <View style={styles.dateStyle}>
-                <Text style={styles.dateText}>{monthAndDay()}</Text>
+                <Text
+                  style={styles.dateText}
+                  allowFontScaling={false}
+                >
+                  {monthAndDay()}
+                </Text>
               </View>
-              <View style={styles.divider}></View>
+              <View style={styles.divider}/>
               <View style={styles.timeStyle}>
-                <Text style={styles.timeText}>{amPm}</Text>
+                <Text
+                  style={styles.timeText}
+                  allowFontScaling={false}
+                >
+                  {amPm}
+                </Text>
                 <Text style={styles.timeText}> </Text>
-                <Text style={styles.timeText}>{leadingZeros(date.getHours(), 2)}</Text>
-                <Text style={styles.timeText}>{':'}</Text>
-                <Text style={styles.timeText}>{leadingZeros(date.getMinutes(), 2)}</Text>
+                <Text
+                  style={styles.timeText}
+                  allowFontScaling={false}
+                >
+                  {leadingZeros(date.getHours(), 2)}
+                </Text>
+                <Text
+                  style={styles.timeText}
+                  allowFontScaling={false}
+                >
+                  {':'}
+                </Text>
+                <Text
+                  style={styles.timeText}
+                  allowFontScaling={false}
+                >
+                  {leadingZeros(date.getMinutes(), 2)}
+                </Text>
               </View>
             </View>
             <View style={styles.locationPlaceStyle}>
-              <Text style={styles.locationPlaceTextStyle}>{addressName}</Text>
+              <Text
+                style={styles.locationPlaceTextStyle}
+                allowFontScaling={false}
+              >
+                {addressName}
+              </Text>
               <Image style={{ marginLeft: 4 }} source={require('../../../../Assets/img/icMap.png')} />
             </View>
             <View style={styles.tempAndHumidityStyle}>
-              <Text style={styles.temp}>
+              <Text
+                style={styles.temp}
+                allowFontScaling={false}
+              >
                 {publicAirInfo
                   ? tempMod
                     ? parseInt(publicAirInfo.Info.WeatherInfo.Temperature * 1.8 + 32)
                     : parseInt(publicAirInfo.Info.WeatherInfo.Temperature)
                   : '-'}
               </Text>
-              <Text style={styles.tempMod}>{tempMod ? '°F' : '°C'}</Text>
-              <Text style={styles.humidity}>{publicAirInfo ? publicAirInfo.Info.WeatherInfo.Humid : '-'}</Text>
-              <Text style={styles.percent}>%</Text>
+              <Text
+                style={styles.tempMod}
+                allowFontScaling={false}
+              >
+                {tempMod ? '°F' : '°C'}
+              </Text>
+              <Text
+                style={styles.humidity}
+                allowFontScaling={false}
+              >
+                {publicAirInfo ? publicAirInfo.Info.WeatherInfo.Humid : '-'}
+              </Text>
+              <Text
+                style={styles.percent}
+                allowFontScaling={false}
+              >
+                %
+              </Text>
             </View>
           </View>
           <View style={styles.stateStyle}>
             <View style={styles.stateViewStyle}>
-              <Text style={styles.pm25Style}>{strings.main_label_pm25}</Text>
+              <Text
+                style={styles.pm25Style}
+                allowFontScaling={false}
+              >
+                {strings.main_label_pm25}
+              </Text>
               <View style={styles.pm25StateViewStyle}>
-                <Text style={[styles.pm25Layer, getPublicPm25TextColor(parseInt(publicPm25))]}>{parseInt(publicPm25)}</Text>
-                <Text style={styles.pm25StateUnit}>{strings.main_label_pm_unit}</Text>
+                <Text
+                  style={[styles.pm25Layer, getPublicPm25TextColor(parseInt(publicPm25))]}
+                  allowFontScaling={false}
+                >
+                  {parseInt(publicPm25)}
+                </Text>
+                <Text
+                  style={styles.pm25StateUnit}
+                  allowFontScaling={false}
+                >
+                  {strings.main_label_pm_unit}
+                </Text>
               </View>
             </View>
             <View style={styles.stateViewStyle}>
-              <Text style={styles.pm10Style}>{strings.main_label_pm10}</Text>
+              <Text
+                style={styles.pm10Style}
+                allowFontScaling={false}
+              >
+                {strings.main_label_pm10}
+              </Text>
               <View style={styles.pm10StateViewStyle}>
-                <Text style={[styles.pm10Layer, getPublicPm10TextColor(parseInt(publicPm10))]}>{parseInt(publicPm10)}</Text>
-                <Text style={styles.pm10StateUnit}>{strings.main_label_pm_unit}</Text>
+                <Text
+                  style={[styles.pm10Layer, getPublicPm10TextColor(parseInt(publicPm10))]}
+                  allowFontScaling={false}
+                >
+                  {parseInt(publicPm10)}
+                </Text>
+                <Text
+                  style={styles.pm10StateUnit}
+                  allowFontScaling={false}
+                >
+                  {strings.main_label_pm_unit}
+                </Text>
               </View>
             </View>
             <View style={styles.stateViewStyle}>
-              <Text style={styles.ozoneStyle}>{strings.main_label_ozone}</Text>
+              <Text
+                style={styles.ozoneStyle}
+                allowFontScaling={false}
+              >
+                {strings.main_label_ozone}
+              </Text>
               <View style={styles.ozoneViewStyle}>
-                <Text style={[styles.ozoneLayer, getPublicO3TextColor(publicO3)]}>{parseInt(publicO3)}</Text>
-                <Text style={styles.ozoneStateUnit}>{strings.main_label_ppb}</Text>
+                <Text
+                  style={[styles.ozoneLayer, getPublicO3TextColor(publicO3)]}
+                  allowFontScaling={false}
+                >
+                  {parseInt(publicO3)}
+                </Text>
+                <Text
+                  style={styles.ozoneStateUnit}
+                  allowFontScaling={false}
+                >
+                  {strings.main_label_ppb}
+                </Text>
               </View>
             </View>
             <View style={styles.stateViewStyle}>
-              <Text style={styles.pollenStyle}>{strings.main_label_pollen}</Text>
+              <Text
+                style={styles.pollenStyle}
+                allowFontScaling={false}
+              >
+                {strings.main_label_pollen}
+              </Text>
               <View style={styles.pollenViewStyle}>
                 {publicPollenTree === null ? (
                   <Text style={styles.pollenText}>-</Text>
                 ) : (
-                  <Text style={[styles.pollenLayer, getPublicPollenTreeTextColor(publicPollenTree)]}>
+                  <Text
+                    style={[styles.pollenLayer, getPublicPollenTreeTextColor(publicPollenTree)]}
+                    allowFontScaling={false}
+                  >
                     {publicPollenTree.toString()}
                   </Text>
                 )}
-                <Text style={[styles.pollenStateUnit, { marginRight: 2 }]}>/</Text>
+                <Text
+                  style={[styles.pollenStateUnit, { marginRight: 2 }]}
+                  allowFontScaling={false}
+                >
+                  /
+                </Text>
                 {publicPollenWeed === null ? (
                   <Text style={styles.pollenText}>-</Text>
                 ) : (
-                  <Text style={[styles.pollenLayer, getPublicPollenWeedTextColor(publicPollenWeed)]}>
+                  <Text
+                    style={[styles.pollenLayer, getPublicPollenWeedTextColor(publicPollenWeed)]}
+                    allowFontScaling={false}
+                  >
                     {publicPollenWeed.toString()}
                   </Text>
                 )}
-                <Text style={styles.pollenStateUnit}>{strings.main_label_index}</Text>
+                <Text
+                  style={styles.pollenStateUnit}
+                  allowFontScaling={false}
+                >
+                  {strings.main_label_index}
+                </Text>
               </View>
             </View>
             <View style={styles.pollenView}>
@@ -621,13 +716,21 @@ function open_WhatsApp() {
           </View>
           {!isOnline || devices.length === 0 ? (
             <View style={styles.viewBox}>
-              <ImageBackground source={require('../../../../Assets/img/imgHouseBgShadow.png')} style={styles.whiteBox}>
-                <ImageBackground source={require('../../../../Assets/img/imgHouseGrey.png')} style={styles.stateBox}>
+              <ImageBackground
+                source={require('../../../../Assets/img/imgHouseBgShadow.png')}
+                style={styles.whiteBox}
+                imageStyle={{resizeMode: 'stretch'}}
+              >
+                <ImageBackground
+                  source={require('../../../../Assets/img/imgHouseGrey.png')}
+                  style={styles.stateBox}
+                  imageStyle={{resizeMode: 'stretch'}}
+                >
                   <Image source={require('../../../../Assets/img/imgPicohomeOff.png')} style={styles.picoOff} />
                   <View style={styles.picoInfo}>
                     <Text style={styles.picoOffText}>{strings.main_no_picohome_title}</Text>
                   </View>
-                  <View style={(styles.picoStateInfo, styles.picoOffInfo)}>
+                  <View style={[styles.picoStateInfo, styles.picoOffInfo]}>
                     <Text style={styles.picoOffInfoText}>{strings.main_no_picohome_contents}</Text>
                   </View>
                   <View style={styles.connectPico}>
@@ -662,7 +765,7 @@ function open_WhatsApp() {
             </View>
           ) : (
             <View>
-              {devices.length != 0 && deviceAndAirInfo.length != 0 ? (
+              {devices.length !== 0 && deviceAndAirInfo.length !== 0 ? (
                 <BitSwiper
                   items={deviceAndAirInfo}
                   style={{ width: width }}
@@ -679,10 +782,14 @@ function open_WhatsApp() {
                           <View>
                             <ImageBackground
                               source={require('../../../../Assets/img/imgHouseBgShadow.png')}
-                              style={styles.whiteBox}>
+                              style={styles.whiteBox}
+                              imageStyle={{resizeMode: 'stretch'}}
+                            >
                               <ImageBackground
                                 source={require('../../../../Assets/img/imgHouseGrey.png')}
-                                style={styles.stateBox}>
+                                style={styles.stateBox}
+                                imageStyle={{resizeMode: 'stretch'}}
+                              >
                                 <Image source={require('../../../../Assets/img/imgPicohomeOff.png')} style={styles.picoOff} />
                                 <View style={styles.picoInfo}>
                                   <Text style={styles.picoOffText}>{strings.popup_offline_title}</Text>
@@ -714,7 +821,9 @@ function open_WhatsApp() {
                             }>
                             <ImageBackground
                               source={require('../../../../Assets/img/imgHouseBgShadow.png')}
-                              style={styles.whiteBox}>
+                              style={styles.whiteBox}
+                              imageStyle={{resizeMode: 'stretch'}}
+                            >
                               <ImageBackground
                                 source={getHomeSource(item.stateInfo.pm25)}
                                 style={
@@ -723,7 +832,9 @@ function open_WhatsApp() {
                                   // 고정 크기를 이용하면 크게 상관은 없지만
                                   // 어떤 핸드폰에서는 PiCO Home이 지나치게 작아 보일 수 있다.
                                   styles.stateBox
-                                }>
+                                }
+                                imageStyle={{resizeMode: 'stretch'}}
+                              >
                                 <Image source={getPicoHomeSource(item.stateInfo.pm25)} style={{ width: 72, height: 72 }} />
                                 <View style={styles.picoDeviceSetting}>
                                   <TouchableOpacity
@@ -738,52 +849,148 @@ function open_WhatsApp() {
                                     <Image source={require('../../../../Assets/img/icSettingsWhite.png')} />
                                   </TouchableOpacity>
                                 </View>
-                                <Text style={styles.picoName}>{item.PicoName}</Text>
-                                <Text style={styles.picoPlace}>{item.Description}</Text>
-                                <Text style={styles.picoHomeState}>{getHomeState(item.stateInfo.pm25)}</Text>
+                                <Text
+                                  style={styles.picoName}
+                                  allowFontScaling={false}
+                                >
+                                  {item.PicoName}
+                                </Text>
+                                <Text
+                                  style={styles.picoPlace}
+                                  allowFontScaling={false}
+                                >
+                                  {item.Description}
+                                </Text>
+                                <Text
+                                  style={styles.picoHomeState}
+                                  allowFontScaling={false}
+                                >
+                                  {getHomeState(item.stateInfo.pm25)}
+                                </Text>
                                 <View style={styles.picoTempAndHumdi}>
-                                  <Text style={styles.picoTemp}>
+                                  <Text
+                                    style={styles.picoTemp}
+                                    allowFontScaling={false}
+                                  >
                                     {tempMod
-                                      ? Math.round((item.stateInfo.temp / 10.0) * 1.8 + 32)
-                                      : Math.round(item.stateInfo.temp / 10.0)}
+                                      ? Math.round(item.stateInfo.temp * 1.8 + 32)
+                                      : Math.round(item.stateInfo.temp)}
                                   </Text>
-                                  <Text style={styles.picoTempUnit}>{tempMod ? '°F' : '°C'}</Text>
+                                  <Text
+                                    style={styles.picoTempUnit}
+                                    allowFontScaling={false}
+                                  >
+                                    {tempMod ? '°F' : '°C'}
+                                  </Text>
                                   <Text>{'   '}</Text>
-                                  <Text style={styles.picoHumdi}>{Math.round(item.stateInfo.humd / 10.0)}</Text>
-                                  <Text style={styles.picoHumdiUnit}>%</Text>
+                                  <Text
+                                    style={styles.picoHumdi}
+                                    allowFontScaling={false}
+                                  >
+                                    {Math.round(item.stateInfo.humd)}
+                                  </Text>
+                                  <Text
+                                    style={styles.picoHumdiUnit}
+                                    allowFontScaling={false}
+                                  >
+                                    %
+                                  </Text>
                                 </View>
                                 <View style={styles.picoStateInfo}>
                                   <View style={styles.picoStatePm25Style}>
-                                    <View style={{ height: 30, justifyContent: 'center' }}>
-                                      <Text style={styles.picoStatePm25Text}>{strings.main_label_pm25}</Text>
+                                    <View style={{ height: 35, justifyContent: 'center' }}>
+                                      <Text
+                                        style={styles.picoStatePm25Text}
+                                        allowFontScaling={false}
+                                      >
+                                        {strings.main_label_pm25}
+                                      </Text>
                                     </View>
                                     <Image source={require('../../../../Assets/img/icPm25.png')} />
-                                    <Text style={styles.picoStatePm25}>{item.stateInfo.pm25}</Text>
-                                    <Text style={styles.picoStatePm25Unit}>{strings.main_label_pm_unit}</Text>
+                                    <Text
+                                      style={styles.picoStatePm25}
+                                      allowFontScaling={false}
+                                    >
+                                      {item.stateInfo.pm25}
+                                    </Text>
+                                    <Text
+                                      style={styles.picoStatePm25Unit}
+                                      allowFontScaling={false}
+                                    >
+                                      {strings.main_label_pm_unit}
+                                    </Text>
                                   </View>
                                   <View style={styles.picoStatePm10Style}>
-                                    <View style={{ height: 30, justifyContent: 'center' }}>
-                                      <Text style={styles.picoStatePm10Text}>{strings.main_label_pm10}</Text>
+                                    <View style={{ height: 35, justifyContent: 'center' }}>
+                                      <Text
+                                        style={styles.picoStatePm10Text}
+                                        allowFontScaling={false}
+                                      >
+                                        {strings.main_label_pm10}
+                                      </Text>
                                     </View>
                                     <Image source={require('../../../../Assets/img/icPm10.png')} />
-                                    <Text style={styles.picoStatePm10}>{item.stateInfo.pm10}</Text>
-                                    <Text style={styles.picoStatePm10Unit}>{strings.main_label_pm_unit}</Text>
+                                    <Text
+                                      style={styles.picoStatePm10}
+                                      allowFontScaling={false}
+                                    >
+                                      {item.stateInfo.pm10}
+                                    </Text>
+                                    <Text
+                                      style={styles.picoStatePm10Unit}
+                                      allowFontScaling={false}
+                                    >
+                                      {strings.main_label_pm_unit}
+                                    </Text>
                                   </View>
                                   <View style={styles.picoStateVOCStyle}>
-                                    <View style={{ height: 30, justifyContent: 'center' }}>
-                                      <Text style={styles.picoStateVOCText}>{strings.main_label_vocs}</Text>
+                                    <View style={{ height: 35, justifyContent: 'center' }}>
+                                      <Text
+                                        style={[
+                                          styles.picoStateVOCText,
+                                          strings.getLanguage() !== 'en_US' && { marginBottom: 15 }
+                                        ]}
+                                        allowFontScaling={false}
+                                      >
+                                        {strings.main_label_vocs}
+                                      </Text>
                                     </View>
                                     <Image source={require('../../../../Assets/img/icVoc.png')} />
-                                    <Text style={styles.picoStateVOC}>{item.stateInfo.vocs}</Text>
-                                    <Text style={styles.picoStateVOCUnit}>{strings.main_label_ppb}</Text>
+                                    <Text
+                                      style={styles.picoStateVOC}
+                                      allowFontScaling={false}
+                                    >
+                                      {item.stateInfo.vocs}
+                                    </Text>
+                                    <Text
+                                      style={styles.picoStateVOCUnit}
+                                      allowFontScaling={false}
+                                    >
+                                      {strings.main_label_ppb}
+                                    </Text>
                                   </View>
                                   <View style={styles.picoStateCO2Style}>
-                                    <View style={{ height: 30, justifyContent: 'center' }}>
-                                      <Text style={styles.picoStateCO2Text}>{strings.scan_label_co2}</Text>
+                                    <View style={{ height: 35, justifyContent: 'center' }}>
+                                      <Text
+                                        style={styles.picoStateCO2Text}
+                                        allowFontScaling={false}
+                                      >
+                                        {strings.scan_label_co2}
+                                      </Text>
                                     </View>
                                     <Image source={require('../../../../Assets/img/icCo2.png')} />
-                                    <Text style={styles.picoStateCO2}>{item.stateInfo.co2}</Text>
-                                    <Text style={styles.picoStateCO2Unit}>{strings.main_label_ppm}</Text>
+                                    <Text
+                                      style={styles.picoStateCO2}
+                                      allowFontScaling={false}
+                                    >
+                                      {item.stateInfo.co2}
+                                    </Text>
+                                    <Text
+                                      style={styles.picoStateCO2Unit}
+                                      allowFontScaling={false}
+                                    >
+                                      {strings.main_label_ppm}
+                                    </Text>
                                   </View>
                                 </View>
                                 <View style={styles.connectPico}>
@@ -837,6 +1044,40 @@ function open_WhatsApp() {
           </TouchableOpacity>
         </View>
       </Modal>
+
+      <Modal isVisible={isFirmwareUpdate} onBackdropPress={() => setIsFirmwareUpdate(false)}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalCancel}>
+            <TouchableOpacity onPress={() => setIsFirmwareUpdate(false)}>
+              <Image source={require('../../../../Assets/img/icCancel.png')} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.modalHeaderTextView}>
+            <Text style={styles.modalHeaderText}>{strings.popup_firmwareupdate_title}</Text>
+          </View>
+          <View style={styles.modalSubTextView}>
+            <Text style={styles.modalSubTextNotCenter}>{strings.popup_firmwareupdate_contents}</Text>
+          </View>
+          <TouchableOpacity onPress={() => setIsFirmwareUpdate(false)}>
+            <View style={[styles.modalButton, { width: width * 0.8 }]}>
+              <Text style={styles.modalButtonText}>{strings.main_popup_pollen_button_ok}</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
+      <Modal isVisible={isForcedLogout}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalSubTextView}>
+            <Text style={styles.modalSubText}>{strings.popup_auto_logout_contents}</Text>
+          </View>
+          <TouchableOpacity onPress={() => signOut()}>
+            <View style={[styles.modalButton, { width: width * 0.8 }]}>
+              <Text style={styles.modalButtonText}>{strings.popup_button_ok}</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -858,11 +1099,6 @@ const styles = StyleSheet.create({
     height: height,
     backgroundColor: colors.white,
     alignItems: 'center',
-  },
-  indicator: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   linearGradientStyle: {
     position: 'absolute',
@@ -970,7 +1206,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   stateViewStyle: {
-    width: width * 0.156,
     height: width * 0.156,
     margin: width * 0.0312,
     alignItems: 'center',
@@ -979,8 +1214,8 @@ const styles = StyleSheet.create({
   pm25Style: {
     textAlign: 'center',
     fontFamily: 'NotoSans-Regular',
-    fontSize: 11,
-
+    fontSize: 13.75,
+    marginBottom: 3,
     color: colors.blueGrey,
   },
   pm25StateViewStyle: {
@@ -1002,7 +1237,8 @@ const styles = StyleSheet.create({
   pm10Style: {
     textAlign: 'center',
     fontFamily: 'NotoSans-Regular',
-    fontSize: 11,
+    fontSize: 13.75,
+    marginBottom: 3,
     color: colors.blueGrey,
   },
   pm10StateViewStyle: {
@@ -1024,7 +1260,8 @@ const styles = StyleSheet.create({
   ozoneStyle: {
     textAlign: 'center',
     fontFamily: 'NotoSans-Regular',
-    fontSize: 11,
+    fontSize: 13.75,
+    marginBottom: 3,
     color: colors.blueGrey,
   },
   ozoneViewStyle: {
@@ -1046,7 +1283,8 @@ const styles = StyleSheet.create({
   pollenStyle: {
     textAlign: 'center',
     fontFamily: 'NotoSans-Regular',
-    fontSize: 11,
+    fontSize: 13.75,
+    marginBottom: 3,
     color: colors.blueGrey,
   },
   pollenViewStyle: {
@@ -1075,56 +1313,8 @@ const styles = StyleSheet.create({
     right: 5,
     top: 0,
   },
-  modalContainer: {
-    width: width * 0.9,
-    paddingHorizontal: 24,
-    paddingTop: 32,
-    paddingBottom: 24,
-    alignItems: 'center',
-    borderRadius: 10,
-    backgroundColor: colors.white,
-  },
-  modalCancel: { position: 'absolute', top: 12, right: 12 },
-  modalHeaderTextView: {
-    width: width * 0.9,
-    alignItems: 'center',
-  },
-  modalHeaderText: { fontSize: 22, fontFamily: 'NotoSans-Bold' },
-  modalSubTextView: {
-    width: width * 0.75,
-    marginTop: height * 0.0281,
-  },
-  modalSubText: {
-    textAlign: 'center',
-    fontFamily: 'NotoSans-Regular',
-    fontSize: 14,
-    color: colors.brownGrey,
-  },
-  modalButton: {
-    width: width * 0.3875,
-    height: height * 0.0704,
-    marginTop: height * 0.0423,
-    marginHorizontal: 4,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 30,
-    backgroundColor: colors.azure,
-    shadowColor: 'rgba(0, 172, 255, 0.2)',
-    shadowOffset: {
-      width: 0,
-      height: 10,
-    },
-    shadowRadius: 16,
-    shadowOpacity: 1,
-    elevation: 1,
-  },
-  modalButtonText: {
-    fontSize: 20,
-    fontFamily: 'NotoSans-Bold',
-    color: colors.white,
-  },
   viewBox: {
-    width: width * 0.85,
+    width: width * 0.9,
     alignItems: 'center',
   },
   picoHomeContainer: {
@@ -1151,8 +1341,8 @@ const styles = StyleSheet.create({
   },
   picoDeviceSetting: {
     position: 'absolute',
-    top: 75,
-    left: 230,
+    top: 80,
+    right: 5,
   },
   picoName: {
     textAlign: 'center',
@@ -1224,18 +1414,18 @@ const styles = StyleSheet.create({
   },
   picoStatePm25Style: {
     flexDirection: 'column',
-    margin: width * 0.015,
     alignItems: 'center',
   },
   picoStatePm25Text: {
     fontFamily: 'NotoSans-Regular',
-    fontSize: 8,
+    fontSize: 12,
     color: colors.white,
   },
   picoStatePm25: {
     fontFamily: 'godoRounded R',
     fontSize: 30,
     lineHeight: 30,
+    marginTop: 5,
     color: colors.white,
   },
   picoStatePm25Unit: {
@@ -1245,18 +1435,19 @@ const styles = StyleSheet.create({
   },
   picoStatePm10Style: {
     flexDirection: 'column',
-    margin: width * 0.015,
+    marginLeft: width * 0.015,
     alignItems: 'center',
   },
   picoStatePm10Text: {
     fontFamily: 'NotoSans-Regular',
-    fontSize: 8,
+    fontSize: 12,
     color: colors.white,
   },
   picoStatePm10: {
     fontFamily: 'godoRounded R',
     fontSize: 30,
     lineHeight: 30,
+    marginTop: 5,
     color: colors.white,
   },
   picoStatePm10Unit: {
@@ -1266,12 +1457,12 @@ const styles = StyleSheet.create({
   },
   picoStateVOCStyle: {
     flexDirection: 'column',
-    margin: width * 0.015,
+    marginLeft: width * 0.015,
     alignItems: 'center',
   },
   picoStateVOCText: {
     fontFamily: 'NotoSans-Regular',
-    fontSize: 8,
+    fontSize: 12,
     textAlign: 'center',
     color: colors.white,
   },
@@ -1279,6 +1470,7 @@ const styles = StyleSheet.create({
     fontFamily: 'godoRounded R',
     fontSize: 30,
     lineHeight: 30,
+    marginTop: 5,
     color: colors.white,
   },
   picoStateVOCUnit: {
@@ -1288,18 +1480,19 @@ const styles = StyleSheet.create({
   },
   picoStateCO2Style: {
     flexDirection: 'column',
-    margin: width * 0.015,
+    marginLeft: width * 0.015,
     alignItems: 'center',
   },
   picoStateCO2Text: {
     fontFamily: 'NotoSans-Regular',
-    fontSize: 8,
+    fontSize: 12,
     color: colors.white,
   },
   picoStateCO2: {
     fontFamily: 'godoRounded R',
     fontSize: 30,
     lineHeight: 30,
+    marginTop: 5,
     color: colors.white,
   },
   picoStateCO2Unit: {
@@ -1317,7 +1510,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
   },
-
   connectPicoPlus: {
     width: addWidth,
     height: addHeight,
@@ -1325,7 +1517,6 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 10,
     backgroundColor: colors.marineBlue,
   },
-  
   connectPicoPlus2: {
     width: addWidth,
     height: addHeight,
@@ -1334,14 +1525,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.marineBlue,
   },
   whiteBox: {
-    width: width * 0.85,
-    height: width,
+    width: width * 0.96,
+    height: width * 1.0,
     alignItems: 'center',
   },
   stateBox: {
     position: 'absolute',
     top: 22,
-    width: width * 0.7,
+    width: width * 0.77,
     height: width * 0.81,
     alignItems: 'center',
   },
@@ -1361,7 +1552,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-
   modalContainer: {
     width: width * 0.9,
     paddingHorizontal: 24,
@@ -1386,6 +1576,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'NotoSans-Regular',
     fontSize: 14,
+    color: colors.brownGrey,
+  },
+  modalSubTextNotCenter: {
+    fontFamily: 'NotoSans-Regular',
+    fontSize: 13,
     color: colors.brownGrey,
   },
   modalButton: {

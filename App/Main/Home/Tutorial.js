@@ -479,7 +479,7 @@ const styles = StyleSheet.create({
   },
   tutorialBox: {
     width: width,
-    height: height,
+    height: '100%',
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
   linearGradientStyle: {
@@ -758,7 +758,7 @@ const styles = StyleSheet.create({
   picoDeviceSetting: {
     position: 'absolute',
     top: imageHeight * 0.22,
-    right: imageWidth * 0.2,
+    right: 25,
     width: 16,
     height: 16,
   },
@@ -891,8 +891,8 @@ const styles = StyleSheet.create({
   },
   connectPico: {
     position: 'absolute',
-    top: imageHeight * 0.715,
-    left: imageWidth * 0.087,
+    top: imageHeight * 0.71,
+    left: imageWidth * 0.07,
   },
   connectPicoPlus: {
     width: addWidth,

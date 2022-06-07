@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect} from 'react';
 import { StyleSheet, View, Text, Image, Dimensions, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { DeviceContext, LanguageContext, PicoContext, SettingContext, UserContext } from '../../../context';
+import useCheckFirmwareVersion from '../../../src/Hooks/useCheckFirmwareVersion';
 import Modal from 'react-native-modal';
 import colors from '../../../src/colors';
 
@@ -10,11 +11,13 @@ export const DeviceSetting = ({ navigation }) => {
   const userInfo = useContext(UserContext);
   const device = useContext(DeviceContext);
   const id = useContext(PicoContext);
+  const [getLatestFirmwareVersion, getDeviceFirmwareVersion] = useCheckFirmwareVersion()
 
   const [isLoading, setIsLoading] = useState(true);
-  const [latestVersion, setLatestVersion] = useState('');
+  const [isLatestVersion, setIsLatestVersion] = useState(true);
   const [serialNum, setSerialNum] = useState('');
   const [deleteModal, setDeleteModal] = useState(false);
+  const [isFirmwareUpdate, setIsFirmwareUpdate] = useState(false);
 
   useEffect(() => {
 
@@ -23,7 +26,9 @@ export const DeviceSetting = ({ navigation }) => {
 
   }); 
 
-
+  useEffect(() => {
+    checkFirmwareUpdate()
+  }, [])
 
   // 디바이스 등록 삭제
   const removeDeviceAndEscape = () => {
@@ -57,6 +62,16 @@ export const DeviceSetting = ({ navigation }) => {
         //======console.error(error);
       });
   };
+
+  const checkFirmwareUpdate = async () => {
+    setIsLoading(false)
+    
+    const latestVersion = await getLatestFirmwareVersion(id)
+    const verson = await getDeviceFirmwareVersion(id)
+    
+    setIsLatestVersion((latestVersion > verson) || (latestVersion < verson))
+    setIsLoading(true)
+  }
 
   return (
     <View style={styles.container}>
@@ -117,8 +132,18 @@ export const DeviceSetting = ({ navigation }) => {
               </Modal>
               <View style={styles.firmwareVersionViewStyle}>
                 <View style={styles.firmwareVersionStyle}>
-                  <Text style={styles.firmwareVersionText}>{strings.devicesetting_list_firmware}</Text>
-                  <Text style={styles.firmwareVersion}>v {device[id].FirmwareVersion}</Text>
+                  <View style={{flexDirection: "row"}}>
+                    <Text style={styles.firmwareVersionText}>{strings.devicesetting_list_firmware}</Text>
+                    <Text style={styles.firmwareVersion}>  v {device[id].FirmwareVersion}</Text>
+                  </View>
+                    <TouchableOpacity 
+                      disabled={isLatestVersion}
+                      onPress={() => setIsFirmwareUpdate(true)}
+                    >
+                      <Text style={isLatestVersion ? styles.firmwareVersion : styles.firmwareVersionUpdate}>
+                        {isLatestVersion ? strings.devicesetting_firmware_vesion_latest : strings.devicesetting_firmware_vesion_update}
+                      </Text>
+                    </TouchableOpacity>
                 </View>
               </View>
               <View style={styles.macaddressViewStyle}>
@@ -129,6 +154,28 @@ export const DeviceSetting = ({ navigation }) => {
               </View>
             </View>
           </View>
+
+          <Modal isVisible={isFirmwareUpdate} onBackdropPress={() => setIsFirmwareUpdate(false)}>
+            <View style={styles.modalContainer}>
+              <View style={styles.modalCancel}>
+                <TouchableOpacity onPress={() => setIsFirmwareUpdate(false)}>
+                  <Image source={require('../../../../Assets/img/icCancel.png')} />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.modalHeaderTextView}>
+                <Text style={styles.modalHeaderText}>{strings.popup_firmwareupdate_title}</Text>
+              </View>
+              <View style={styles.modalSubTextView}>
+                <Text style={styles.modalSubTextNotCenter}>{strings.popup_firmwareupdate_contents}</Text>
+              </View>
+              <TouchableOpacity onPress={() => setIsFirmwareUpdate(false)}>
+                <View style={[styles.modalButton, { width: width * 0.8 }]}>
+                  <Text style={styles.modalButtonText}>{strings.main_popup_pollen_button_ok}</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </Modal>
+
           {/* latestVersion ? (
             <View style={styles.latestVersionView}>
               <View style={styles.latestVersionStyle}>
@@ -239,6 +286,11 @@ const styles = StyleSheet.create({
     marginTop: height * 0.0281,
   },
   modalSubText: { textAlign: 'center', fontFamily: 'NotoSans-Regular', fontSize: 16, color: colors.brownGrey },
+  modalSubTextNotCenter: {
+    fontFamily: 'NotoSans-Regular',
+    fontSize: 13,
+    color: colors.brownGrey,
+  },
   modalButton: {
     width: width * 0.3875,
     height: height * 0.0704,
@@ -292,6 +344,11 @@ const styles = StyleSheet.create({
     fontFamily: 'NotoSans-Regular',
     fontSize: 12,
     color: colors.brownishGrey,
+  },
+  firmwareVersionUpdate: {
+    fontFamily: 'NotoSans-Regular',
+    fontSize: 12,
+    color: colors.reddishPink,
   },
   latestVersionView: { position: 'absolute', bottom: 32 },
   latestVersionStyle: {

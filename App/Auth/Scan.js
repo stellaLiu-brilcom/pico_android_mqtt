@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState,  } from 'react';
 import {BackHandler} from 'react-native';
-import { HeaderBackButton } from '@react-navigation/stack';
 import { StyleSheet, View, Text, Image, Dimensions, ActivityIndicator, NativeModules } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { BackToFromContext, LanguageContext } from '../context';
 import { PicoDevice } from '../Main/Home/Connect/FindPicoToScan';
 import colors from '../src/colors';
+import cal from '../src/calculate';
+import cnt from '../src/constant';
 
 
 export const Scan = ({ navigation }) => {
@@ -22,9 +22,7 @@ export const Scan = ({ navigation }) => {
   const [humd, setHumd] = useState(PicoDevice.data != null ? '-' : 0);
   const [vocs, setVOCs] = useState(PicoDevice.data != null ? '-' : 0);
   const [co2, setCO2] = useState(PicoDevice.data != null ? '-' : 0);
-  
-  
-  
+
   function handleBackButtonClick() {
     navigation.navigate('Connect');
     return true;
@@ -33,7 +31,6 @@ export const Scan = ({ navigation }) => {
   function tick() {
     update();
   }
- 
 
   function update() {
     PicoDevice.reload();
@@ -44,7 +41,6 @@ export const Scan = ({ navigation }) => {
     setVOCs(PicoDevice.data != null ? PicoDevice.data.vocs.value : 0);
     setCO2(PicoDevice.data != null ? PicoDevice.data.co2.value : 0);
 
-    
     if (count > 5) {
       setIsLoading(true);
     }
@@ -54,27 +50,25 @@ export const Scan = ({ navigation }) => {
   }
 
   const getPm25Color = (value) => {
-    if (0 <= value && value <= 15) {
+    if (cal.boundaryPM25(value) === cnt.PM25_GOOD)
       return colors.azure;
-    } else if (16 <= value && value <= 35) {
+    else if (cal.boundaryPM25(value) === cnt.PM25_MOD)
       return colors.darkLimeGreen;
-    } else if (36 <= value && value <= 75) {
+    else if (cal.boundaryPM25(value) === cnt.PM25_BAD)
       return colors.lightOrange;
-    } else {
+    else if (cal.boundaryPM25(value) === cnt.PM25_VERY_BAD)
       return colors.coral;
-    }
   };
 
   const getPm25Picture = (value) => {
-    if (0 <= value && value <= 15) {
+    if (cal.boundaryPM25(value) === cnt.PM25_GOOD)
       return require('../../Assets/img/icPm25Blue.png');
-    } else if (16 <= value && value <= 35) {
+    else if (cal.boundaryPM25(value) === cnt.PM25_MOD)
       return require('../../Assets/img/icPm25Green.png');
-    } else if (36 <= value && value <= 75) {
+    else if (cal.boundaryPM25(value) === cnt.PM25_BAD)
       return require('../../Assets/img/icPm25Orange.png');
-    } else {
+    else if (cal.boundaryPM25(value) === cnt.PM25_VERY_BAD)
       return require('../../Assets/img/icPm25Red.png');
-    }
   };
 
   const getPm10Color = (value) => {
@@ -188,7 +182,6 @@ export const Scan = ({ navigation }) => {
       return require('../../Assets/img/icCo2Red.png');
     }
   };
-  
 
   // 1초 마다 블루투스에서 가져오는 값 갱신
   useEffect(() => {
@@ -342,7 +335,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     fontFamily: 'godoRounded R',
     fontSize: 40,
-    lineHeight: 35,
+    lineHeight: 40,
     color: colors.veryLightPink,
   },
   pm25m3: {
@@ -371,7 +364,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     fontFamily: 'godoRounded R',
     fontSize: 40,
-    lineHeight: 35,
+    lineHeight: 40,
     color: colors.azure,
   },
   pm10m3: {
@@ -400,7 +393,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     fontFamily: 'godoRounded R',
     fontSize: 40,
-    lineHeight: 35,
+    lineHeight: 40,
     color: colors.azure,
   },
   temperatureC: {
@@ -429,7 +422,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     fontFamily: 'godoRounded R',
     fontSize: 40,
-    lineHeight: 35,
+    lineHeight: 40,
     color: colors.azure,
   },
   humidityPercent: {
@@ -458,7 +451,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     fontFamily: 'godoRounded R',
     fontSize: 40,
-    lineHeight: 35,
+    lineHeight: 40,
     color: colors.coral,
   },
   Vocppb: {
@@ -487,7 +480,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     fontFamily: 'godoRounded R',
     fontSize: 40,
-    lineHeight: 35,
+    lineHeight: 40,
     color: colors.lightOrange,
   },
   CO2ppm: {

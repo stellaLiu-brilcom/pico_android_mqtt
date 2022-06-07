@@ -18,7 +18,7 @@ import database from '@react-native-firebase/database';
 import WifiManager from 'react-native-wifi-reborn';
 import base64 from 'react-native-base64';
 import colors from '../../../src/colors';
-import useTimer from '../../../src/hooks/useTimer';
+import useTimer from '../../../src/Hooks/useTimer';
 
 export const bleManager = new BleManager();
 const CONNECT_TIME = 30
@@ -36,6 +36,8 @@ export const ConnectWiFi = ({ navigation }) => {
   const [isSecure, setIsSecure] = useState(true);
   const [currentSSID, setCurrentSSID] = useState(null);
   const [password, setPassword] = useState(null);
+
+  const [firmware, setFirmware] = useState('')
 
   const [publicwifimodal, setPublicWifiModal] = useState(false);
   const [sorryModal, setSorryModal] = useState(false);
@@ -120,6 +122,15 @@ export const ConnectWiFi = ({ navigation }) => {
     //console.log(password);
     console.log(PicoDevice.device.id);
     bleManager
+      .readCharacteristicForDevice(
+        PicoDevice.device.id,
+        '0000180A',
+        '00002A26-0000-1000-8000-00805f9b34fb'
+      )
+      .then(({ value }) => {
+        setFirmware(base64.decode(value))
+      })
+    bleManager
       .writeCharacteristicWithoutResponseForDevice(
         PicoDevice.device.id,
         //'24:6F:28:3C:77:46',
@@ -152,6 +163,15 @@ export const ConnectWiFi = ({ navigation }) => {
     setPublicWifiModal(false);
     setIsLoading(false);
     //console.log(password);
+    bleManager
+      .readCharacteristicForDevice(
+        PicoDevice.device.id,
+        '0000180A',
+        '00002A26-0000-1000-8000-00805f9b34fb'
+      )
+      .then(({ value }) => {
+        setFirmware(base64.decode(value))
+      })
     bleManager
       .writeCharacteristicWithoutResponseForDevice(
         PicoDevice.device.id,
@@ -273,8 +293,6 @@ export const ConnectWiFi = ({ navigation }) => {
           .then((result) => {
             console.log('result is =====' + JSON.stringify(result));
 
-            if (result?.result !== 'success')
-              return
             if (isCountClear) {
               // 30초간 Realtime DB에 데이터가 입력되지 않았으므로 와이파이 연결에 실패했다고 가정.
               setIsLoading(true);
@@ -285,11 +303,11 @@ export const ConnectWiFi = ({ navigation }) => {
             if (result?.data?.length > 0) {
               stopCount()
               setIsLoading(true);
-              navigation.navigate('SetUpPico', { id, name });
+              navigation.navigate('SetUpPico', { id, name, firmware });
             }
           });
       } catch (exception) {
-        console.log('ERROR :: ', exception);
+        console.log('ERROR :: ', 'mqtt/GetAirQualityBySec', exception);
       }
     }
   }, [count, isCountClear]);
@@ -438,12 +456,13 @@ export const ConnectWiFi = ({ navigation }) => {
               <TouchableOpacity style={styles.modalCancel} onPress={() => setSorryModal(false)}>
                 <Image source={require('../../../../Assets/img/icCancel.png')} />
               </TouchableOpacity>
-              <Text style={styles.modalTitle}>{strings.wifisetting_2_popup_error_title}</Text>
+              <Text style={[styles.modalTitle, {textAlign: "center"}]}>{strings.wifisetting_3_popup_error_title}</Text>
               <Text style={styles.modalTitle}>{strings.wifisetting_3_popup_error}</Text>
               <TouchableOpacity
                 style={styles.buttonStyle}
                 onPress={() => {
-                  setSorryModal(false), navigation.navigate('Connect');
+                  setSorryModal(false)
+                  navigation.navigate('Connect');
                 }}>
                 <Text style={styles.buttonText}>{strings.wifisetting_3_popup_button_ok}</Text>
               </TouchableOpacity>
@@ -498,7 +517,11 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalCancel: { position: 'absolute', right: 12, top: 12 },
-  modalTitle: { fontFamily: 'NotoSans-Bold', fontSize: 18, marginBottom: 25 },
+  modalTitle: { 
+    fontFamily: 'NotoSans-Bold', 
+    fontSize: 18, 
+    marginBottom: 25,
+  },
   networkBox: {
     width: width * 0.75,
     flexDirection: 'column',

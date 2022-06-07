@@ -192,12 +192,12 @@ export const CreateAccount = ({ navigation }) => {
                 </View>
                 <View style={styles.modalSubTextView}>
                   <Text style={styles.modalSubText}>{strings.signup_confirmemail_popup2_contents}</Text>
-                </View>
+                </View> 
                 <TouchableOpacity onPress={() => setCheckEmailModal(false)}>
                   <View style={styles.modalButton}>
                     <Text style={styles.modalButtonText}>{strings.signup_confirmemail_popup2_button}</Text>
                   </View>
-                </TouchableOpacity>{' '}
+                </TouchableOpacity>
               </View>
             </View>
           </Modal>
