@@ -21,7 +21,7 @@ import {
   DeviceContext,
   OnlineContext,
 } from '../../../context';
-import useCheckFirmwareVersion from '../../../src/Hooks/useCheckFirmwareVersion';
+import useCheckFirmwareVersion from '../../../src/hooks/useCheckFirmwareVersion';
 import LinearGradient from 'react-native-linear-gradient';
 import BitSwiper from 'react-native-bit-swiper';
 import Geolocation from '@react-native-community/geolocation';
@@ -1225,7 +1225,7 @@ const styles = StyleSheet.create({
   pm25Layer: {
     fontFamily: 'godoRounded R',
     fontSize: 30,
-    lineHeight: 30,
+    lineHeight: 35,
   },
   pm25StateUnit: {
     marginLeft: 2,
@@ -1248,7 +1248,7 @@ const styles = StyleSheet.create({
   pm10Layer: {
     fontFamily: 'godoRounded R',
     fontSize: 30,
-    lineHeight: 30,
+    lineHeight: 35,
   },
   pm10StateUnit: {
     marginLeft: 2,
@@ -1271,7 +1271,7 @@ const styles = StyleSheet.create({
   ozoneLayer: {
     fontFamily: 'godoRounded R',
     fontSize: 30,
-    lineHeight: 30,
+    lineHeight: 35,
   },
   ozoneStateUnit: {
     marginLeft: 2,
@@ -1299,7 +1299,7 @@ const styles = StyleSheet.create({
   pollenLayer: {
     fontFamily: 'godoRounded R',
     fontSize: 30,
-    lineHeight: 30,
+    lineHeight: 35,
   },
   pollenStateUnit: {
     marginLeft: 2,
