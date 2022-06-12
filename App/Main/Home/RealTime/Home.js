@@ -1424,7 +1424,7 @@ const styles = StyleSheet.create({
   picoStatePm25: {
     fontFamily: 'godoRounded R',
     fontSize: 30,
-    lineHeight: 30,
+    lineHeight: 35,
     marginTop: 5,
     color: colors.white,
   },
@@ -1446,7 +1446,7 @@ const styles = StyleSheet.create({
   picoStatePm10: {
     fontFamily: 'godoRounded R',
     fontSize: 30,
-    lineHeight: 30,
+    lineHeight: 35,
     marginTop: 5,
     color: colors.white,
   },
@@ -1469,7 +1469,7 @@ const styles = StyleSheet.create({
   picoStateVOC: {
     fontFamily: 'godoRounded R',
     fontSize: 30,
-    lineHeight: 30,
+    lineHeight: 35,
     marginTop: 5,
     color: colors.white,
   },
@@ -1491,7 +1491,7 @@ const styles = StyleSheet.create({
   picoStateCO2: {
     fontFamily: 'godoRounded R',
     fontSize: 30,
-    lineHeight: 30,
+    lineHeight: 35,
     marginTop: 5,
     color: colors.white,
   },
