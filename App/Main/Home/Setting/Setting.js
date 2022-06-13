@@ -114,7 +114,7 @@ export function Setting({ navigation }) {
         </TouchableOpacity>
       </View>
       <View style={styles.versionViewStyle}>
-        <Text style={styles.versionStyle}>v.3.0.14</Text>
+        <Text style={styles.versionStyle}>v.3.0.15</Text>
       </View>
     </View>
   );
