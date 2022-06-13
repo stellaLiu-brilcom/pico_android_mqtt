@@ -212,7 +212,7 @@ export const Scan = ({ navigation }) => {
               <View style={styles.pm25ValueView}>
                 <Text style={[styles.pm25Value, { color: getPm25Color(pm25) }]}>{pm25}</Text>
               </View>
-              <Text style={[styles.pm25m3, { color: getPm25Color(pm25) }]}>μg/m3</Text>
+              <Text style={[styles.pm25m3, { color: getPm25Color(pm25) }]}>μg/m³</Text>
             </View>
           </View>
           <View style={styles.box}>
@@ -223,7 +223,7 @@ export const Scan = ({ navigation }) => {
               <View style={styles.pm10ValueView}>
                 <Text style={[styles.pm10Value, { color: getPm10Color(pm10) }]}>{pm10}</Text>
               </View>
-              <Text style={[styles.pm10m3, { color: getPm10Color(pm10) }]}>μg/m3</Text>
+              <Text style={[styles.pm10m3, { color: getPm10Color(pm10) }]}>μg/m³</Text>
             </View>
           </View>
           <View style={styles.box}>
@@ -336,6 +336,7 @@ const styles = StyleSheet.create({
     fontFamily: 'godoRounded R',
     fontSize: 40,
     lineHeight: 45,
+    bottom: 5,
     color: colors.veryLightPink,
   },
   pm25m3: {
@@ -365,6 +366,7 @@ const styles = StyleSheet.create({
     fontFamily: 'godoRounded R',
     fontSize: 40,
     lineHeight: 45,
+    bottom: 5,
     color: colors.azure,
   },
   pm10m3: {
@@ -394,6 +396,7 @@ const styles = StyleSheet.create({
     fontFamily: 'godoRounded R',
     fontSize: 40,
     lineHeight: 45,
+    bottom: 5,
     color: colors.azure,
   },
   temperatureC: {
@@ -423,6 +426,7 @@ const styles = StyleSheet.create({
     fontFamily: 'godoRounded R',
     fontSize: 40,
     lineHeight: 45,
+    bottom: 5,
     color: colors.azure,
   },
   humidityPercent: {
@@ -452,6 +456,7 @@ const styles = StyleSheet.create({
     fontFamily: 'godoRounded R',
     fontSize: 40,
     lineHeight: 45,
+    bottom: 5,
     color: colors.coral,
   },
   Vocppb: {
@@ -481,6 +486,7 @@ const styles = StyleSheet.create({
     fontFamily: 'godoRounded R',
     fontSize: 40,
     lineHeight: 45,
+    bottom: 5,
     color: colors.lightOrange,
   },
   CO2ppm: {

@@ -173,6 +173,7 @@ const signUpContext = useMemo(() => {
                 headerTitleAlign: 'center',
                 headerTitleStyle: {
                   fontFamily: 'NotoSans-Bold',
+                  fontWeight: 'bold',
                 },
                  headerLeft: (props) => (
               <HeaderBackButton

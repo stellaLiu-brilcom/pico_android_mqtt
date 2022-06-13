@@ -1149,11 +1149,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'NotoSans-Regular',
     fontSize: 10,
+    fontWeight: 'bold',
     color: colors.brownishGrey,
   },
   divider: {
     position: 'absolute',
-    width: 1,
+    width: 1.5,
     height: 10,
     backgroundColor: colors.brownGrey,
   },
@@ -1162,6 +1163,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'NotoSans-Regular',
     fontSize: 10,
+    fontWeight: 'bold',
     color: colors.brownishGrey,
   },
   locationPlaceStyle: { width: width * 0.8, flexDirection: 'row', justifyContent: 'center' },
@@ -1178,6 +1180,7 @@ const styles = StyleSheet.create({
   temp: {
     fontFamily: 'NotoSans-Bold',
     fontSize: 14,
+    fontWeight: 'bold',
     color: colors.blueGrey,
   },
   tempMod: {
@@ -1185,12 +1188,14 @@ const styles = StyleSheet.create({
     marginRight: 4,
     fontFamily: 'NotoSans-Regular',
     fontSize: 10,
+    fontWeight: 'bold',
     color: colors.blueGrey,
   },
   humidity: {
     marginLeft: 4,
     fontFamily: 'NotoSans-Bold',
     fontSize: 14,
+    fontWeight: 'bold',
     color: colors.blueGrey,
   },
   percent: {
@@ -1198,6 +1203,7 @@ const styles = StyleSheet.create({
     marginLeft: 2,
     fontFamily: 'NotoSans-Regular',
     fontSize: 10,
+    fontWeight: 'bold',
     color: colors.blueGrey,
   },
   stateStyle: {
@@ -1224,7 +1230,7 @@ const styles = StyleSheet.create({
   },
   pm25Layer: {
     fontFamily: 'godoRounded R',
-    fontSize: 30,
+    fontSize: 32,
     lineHeight: 35,
   },
   pm25StateUnit: {
@@ -1247,7 +1253,7 @@ const styles = StyleSheet.create({
   },
   pm10Layer: {
     fontFamily: 'godoRounded R',
-    fontSize: 30,
+    fontSize: 32,
     lineHeight: 35,
   },
   pm10StateUnit: {
@@ -1270,7 +1276,7 @@ const styles = StyleSheet.create({
   },
   ozoneLayer: {
     fontFamily: 'godoRounded R',
-    fontSize: 30,
+    fontSize: 32,
     lineHeight: 35,
   },
   ozoneStateUnit: {
@@ -1298,7 +1304,7 @@ const styles = StyleSheet.create({
   },
   pollenLayer: {
     fontFamily: 'godoRounded R',
-    fontSize: 30,
+    fontSize: 32,
     lineHeight: 35,
   },
   pollenStateUnit: {
@@ -1423,7 +1429,7 @@ const styles = StyleSheet.create({
   },
   picoStatePm25: {
     fontFamily: 'godoRounded R',
-    fontSize: 30,
+    fontSize: 32,
     lineHeight: 35,
     marginTop: 5,
     color: colors.white,
@@ -1445,7 +1451,7 @@ const styles = StyleSheet.create({
   },
   picoStatePm10: {
     fontFamily: 'godoRounded R',
-    fontSize: 30,
+    fontSize: 32,
     lineHeight: 35,
     marginTop: 5,
     color: colors.white,
@@ -1468,7 +1474,7 @@ const styles = StyleSheet.create({
   },
   picoStateVOC: {
     fontFamily: 'godoRounded R',
-    fontSize: 30,
+    fontSize: 32,
     lineHeight: 35,
     marginTop: 5,
     color: colors.white,
@@ -1490,7 +1496,7 @@ const styles = StyleSheet.create({
   },
   picoStateCO2: {
     fontFamily: 'godoRounded R',
-    fontSize: 30,
+    fontSize: 32,
     lineHeight: 35,
     marginTop: 5,
     color: colors.white,

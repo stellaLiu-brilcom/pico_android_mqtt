@@ -92,7 +92,9 @@ export const ConnectStackScreen = () => {
             headerTransparent: 'true',
             headerTitleAlign: 'center',
             headerTitleStyle: {
-            fontFamily: 'NotoSans-Bold'},
+            fontFamily: 'NotoSans-Bold',
+            fontWeight: 'bold',
+          },
 
             headerLeft: (props) => (
               <HeaderBackButton
