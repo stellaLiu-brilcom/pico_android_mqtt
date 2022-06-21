@@ -111,15 +111,15 @@ export const MainStackScreen = () => {
     });
   }, []);
 
-  useEffect(() => {
-    AsyncStorage.getItem('placeList').then((value) => {
-      if (value === null) {
-        AsyncStorage.setItem('placeList', initialPlace[locale]);
-      } else {
-        setPlaceList(value.split('/'));
-      }
-    });
-  });
+  // useEffect(() => {
+  //   AsyncStorage.getItem('placeList').then((value) => {
+  //     if (value === null) {
+  //       AsyncStorage.setItem('placeList', initialPlace[locale]);
+  //     } else {
+  //       setPlaceList(value.split('/'));
+  //     }
+  //   });
+  // });
 
   useEffect(() => {
     if (userToken != null) {
@@ -138,7 +138,7 @@ export const MainStackScreen = () => {
       <UserContext.Provider value={userToken}>
         <SignInContext.Provider value={signInState}>
           <SignInErrorContext.Provider value={signInErrorMessage}>
-            <PlaceListContext.Provider value={placeList}>
+            {/* <PlaceListContext.Provider value={placeList}> */}
               {!isLoading ? (
                 <MainStack.Navigator headerMode="none">
                   {userToken ? (
@@ -152,7 +152,7 @@ export const MainStackScreen = () => {
                   <ActivityIndicator size="large" color={colors.azure} />
                 </View>
               )}
-            </PlaceListContext.Provider>
+            {/* </PlaceListContext.Provider> */}
           </SignInErrorContext.Provider>
         </SignInContext.Provider>
       </UserContext.Provider>
