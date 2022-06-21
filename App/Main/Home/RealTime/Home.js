@@ -148,6 +148,8 @@ function open_WhatsApp() {
       return 'rgba(255, 160, 64, 0.3)';
     else if (cal.boundaryPM25(value) === cnt.PM25_VERY_BAD)
       return 'rgba(252, 83, 69, 0.3)';
+
+    return 'rgba(252, 83, 69, 0.3)';
   };
 
   // Background Layer1의 color에 해당하는 이미지 반환
@@ -411,11 +413,11 @@ function open_WhatsApp() {
   // 내부의 Pm25/Pm10/Ozone값을 각각 설정
   useEffect(() => {
       try{
-        setPublicPm25(publicStateInfo.data.timelines[0].intervals[0].values.particulateMatter25);
-        setPublicPm10(publicStateInfo.data.timelines[0].intervals[0].values.particulateMatter10);
-        setPublicO3(publicStateInfo.data.timelines[0].intervals[0].values.pollutantO3);
-        setPublicPollenTree(publicStateInfo.data.timelines[0].intervals[0].values.treeIndex);
-        setPublicPollenWeed(publicStateInfo.data.timelines[0].intervals[0].values.weedIndex);
+        setPublicPm25(publicStateInfo?.data?.timelines[0]?.intervals[0]?.values?.particulateMatter25 || 0);
+        setPublicPm10(publicStateInfo?.data?.timelines[0]?.intervals[0]?.values?.particulateMatter10 || 0);
+        setPublicO3(publicStateInfo?.data?.timelines[0]?.intervals[0]?.values?.pollutantO3 || 0);
+        setPublicPollenTree(publicStateInfo?.data?.timelines[0]?.intervals[0]?.values?.treeIndex || 0);
+        setPublicPollenWeed(publicStateInfo?.data?.timelines[0]?.intervals[0]?.values?.weedIndex || 0);
 
     }catch(exception){
         setPublicPm25(0);
@@ -1017,7 +1019,7 @@ function open_WhatsApp() {
               )}
             </View>
           )}
-        </View>
+          </View>
       ) : (
         <View style={[styles.indicator, { height: height }]}>
           <ActivityIndicator size="large" color={colors.azure} />
