@@ -133,8 +133,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled true
-        versionCode 31457315
-        versionName "3.0.15"
+        versionCode 31457316
+        versionName "3.0.16"
     }
     splits {
         abi {
@@ -175,7 +175,7 @@ android {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"      
         }
-    }
+    }ㄴ
 
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
